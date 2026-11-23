@@ -15,7 +15,7 @@
     <string id="SettingTopicPrompt">Chọn bộ từ vựng muốn học</string>
     <string id="TopicGeneral">Giao tiếp hàng ngày</string>
     <string id="TopicIelts">IELTS / Học thuật cao cấp</string>
-    <string id="TopicFitness">Chạy bộ & Thể thao</string>
+    <string id="TopicFitness">Chạy bộ &amp; Thể thao</string>
     <string id="TopicCustom">Tùy chỉnh cá nhân (Web/JSON)</string>
 
     <string id="SettingApiUrlTitle">Web API Cập nhật từ</string>
