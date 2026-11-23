@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garmin FR 245 Music - Green English Face (Clean & Bolder Moon)</title>
+<style>
+  :root {
+    --bg-watch: #000000;
+    --primary-green: #00e676;
+    --accent-yellow: #ffd54f;
+    --accent-red: #ff5252;
+    --text-white: #ffffff;
+    --text-gray: #b0bec5;
+    --icon-white: #ffffff;
+    --seg-track: #152219;
+  }
+
+  body {
+    margin: 0;
+    padding: 16px 8px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text-white);
+    background: transparent;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .header-desc {
+    text-align: center;
+  }
+  .header-desc h2 {
+    margin: 0 0 6px 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary-green);
+  }
+  .header-desc p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-gray);
+  }
+
+  /* Khung đồng hồ Garmin Forerunner 245 */
+  .watch-case {
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #2a2e33 0%, #15181b 70%, #0d0e10 100%);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 2px 4px rgba(255, 255, 255, 0.08) inset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 3px solid #2f353d;
+  }
+
+  .bezel-ring {
+    width: 316px;
+    height: 316px;
+    border-radius: 50%;
+    background: #000000;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bezel-label {
+    position: absolute;
+    font-size: 7.5px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    color: #546e7a;
+    text-transform: uppercase;
+  }
+  .label-start { top: 9px; right: 34px; transform: rotate(35deg); }
+  .label-back { bottom: 9px; right: 34px; transform: rotate(-35deg); }
+  .label-light { top: 9px; left: 34px; transform: rotate(-35deg); }
+  .label-up { left: 4px; top: 125px; transform: rotate(-90deg); }
+  .label-down { left: 4px; bottom: 125px; transform: rotate(-90deg); }
+
+  /* Màn hình Forerunner 245 (240x240 pixel chuẩn) */
+  .screen {
+    width: 284px;
+    height: 284px;
+    border-radius: 50%;
+    background: var(--bg-watch);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 10px 16px 10px;
+    box-sizing: border-box;
+  }
+
+  /* 1. TOP STATUS BAR */
+  .status-bar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+    z-index: 2;
+  }
+
+  .status-icon-white {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--icon-white);
+  }
+
+  /* PIN THU NHỎ CHUẨN IOS (24x12px - THEO ẢNH IMG_0241) */
+  .battery-compact-wrap {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+  }
+  .battery-compact-body {
+    width: 24px;
+    height: 12px;
+    background: #616161;
+    border-radius: 2.5px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  .battery-compact-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background: #ffffff;
+    transition: width 0.3s ease;
+  }
+  .battery-compact-num {
+    position: relative;
+    z-index: 2;
+    font-size: 10px;
+    font-weight: 900;
+    color: #000000;
+    line-height: 1;
+    letter-spacing: -0.65px;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .battery-compact-nib {
+    width: 2px;
+    height: 5px;
+    background: #ffffff;
+    border-radius: 0 1px 1px 0;
+    margin-left: 1px;
+    transition: background 0.3s ease;
+  }
+
+  /* 2. DATE & LUNAR ROW */
+  .date-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .solar-date {
+    color: #eceff1;
+    letter-spacing: 0.5px;
+  }
+  .lunar-pill {
+    background: rgba(255, 82, 82, 0.2);
+    border: 1px solid rgba(255, 82, 82, 0.5);
+    color: #ff8a80;
+    padding: 1px 6px;
+    border-radius: 6px;
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+
+  /* 3. TIME DISPLAY CONTAINER (NÉT CĂNG NGUYÊN BẢN CHUẨN PIXEL) */
+  .time-row-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    position: relative;
+    margin: -1px 0 1px 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  .time-digits-core {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: center;
+    position: relative;
+  }
+  .time-hour {
+    font-size: 58px;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 0.95;
+    letter-spacing: -1.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  }
+  .time-colon {
+    font-size: 50px;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 0.95;
+    margin: 0 1px;
+    transform: translateY(-4px);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  }
+  .time-minute {
+    font-size: 58px;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 0.95;
+    letter-spacing: -1.5px;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  }
+  .time-second {
+    font-size: 19px;
+    font-weight: 800;
+    color: #ffd54f;
+    line-height: 1;
+    margin-left: 4px;
+    font-variant-numeric: tabular-nums;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+    transform: translateY(-2px);
+  }
+
+  /* 4. VOCABULARY SECTION (2 THANH ĐỨT ĐOẠN SÁT VIỀN 206PX) */
+  .vocab-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .segmented-bar-wide {
+    width: 206px;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    height: 4px;
+  }
+  .seg-item {
+    flex: 1;
+    height: 3px;
+    background: var(--seg-track);
+    border-radius: 1.5px;
+  }
+  .seg-item.active-green {
+    background: var(--primary-green);
+    box-shadow: 0 0 5px rgba(0, 230, 118, 0.8);
+  }
+
+  .vocab-word-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 1px;
+  }
+  .vocab-word {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+    color: var(--primary-green);
+    text-transform: uppercase;
+  }
+  .vocab-pos {
+    font-size: 11px;
+    font-weight: 700;
+    color: #40c4ff;
+    font-style: italic;
+  }
+  .vocab-phonetic {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent-yellow);
+    letter-spacing: 0.3px;
+    font-family: 'Lucida Sans', 'Arial Unicode MS', sans-serif;
+  }
+  .vocab-meaning {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* 5. BOTTOM STEP TEXT */
+  .step-text-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary-green);
+    margin-bottom: 2px;
+  }
+  .step-numbers {
+    color: #ffffff;
+    font-variant-numeric: tabular-nums;
+  }
+  .step-goal-text {
+    color: #78909c;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  /* Controls Panel */
+  .controls-panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    max-width: 520px;
+  }
+  .btn-sample {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(0, 230, 118, 0.25);
+    color: #fff;
+    padding: 6px 13px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .btn-sample.active {
+    background: var(--primary-green);
+    color: #000000;
+    font-weight: 800;
+  }
+
+  .notes-card {
+    width: 100%;
+    background: rgba(0, 230, 118, 0.05);
+    border: 1px solid rgba(0, 230, 118, 0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .notes-card b {
+    color: var(--primary-green);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header-desc">
+    <h2>Garmin Forerunner 245 Music • Green English Face</h2>
+    <p>Icon Mặt trăng DND dày mập rõ nét • Đã xoá đường kẻ đỏ dọc thử nghiệm</p>
+  </div>
+
+  <div class="watch-case">
+    <div class="bezel-ring">
+      <div class="bezel-label label-light">LIGHT</div>
+      <div class="bezel-label label-up">UP</div>
+      <div class="bezel-label label-down">DOWN</div>
+      <div class="bezel-label label-start">START</div>
+      <div class="bezel-label label-back">BACK</div>
+
+      <div class="screen" id="watchScreen">
+        <!-- Đã xoá hoàn toàn đường kẻ đỏ test trục tâm! -->
+
+        <!-- 1. Top Bar: Pin nhỏ gọn + Icon Mặt trăng mập dày + 3 Icon trắng -->
+        <div class="status-bar">
+          <div class="battery-compact-wrap" title="Pin iOS 100% - căn chuẩn thân pin, chóp pin trắng">
+            <div class="battery-compact-body">
+              <div class="battery-compact-fill" id="batFill" style="width: 100%; background: #ffffff;"></div>
+              <span class="battery-compact-num" id="batNum">100</span>
+            </div>
+            <div class="battery-compact-nib" id="batNib" style="background: #ffffff;"></div>
+          </div>
+
+          <!-- Báo thức -->
+          <div class="status-icon-white" title="Báo thức">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86L22 5.72zM7.88 3.39L6.6 1.86 2 5.71l1.29 1.53 4.59-3.85zM12.5 8H11v6l4.75 2.85.75-1.23-4-2.37V8zM12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+            </svg>
+          </div>
+
+          <!-- Điện thoại + Bluetooth -->
+          <div class="status-icon-white" id="iconPhoneBt" title="Ống nghe + Bluetooth">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+              <path d="M12 2l3 3-2.2 2.2 2.2 2.2L12 12.6V8.5h-.8v-1h.8V2zm1 2.2v1.8l1-.9-1-.9zm0 3.8v1.8l1-.9-1-.9z"/>
+            </svg>
+          </div>
+
+          <!-- Không làm phiền (Mặt trăng khuyết MẬP MẠP, DÀY DẶN RÕ RÀNG) -->
+          <div class="status-icon-white" title="Không làm phiền (DND - Mặt trăng mập)">
+            <svg width="14" height="14" viewBox="0 0 384 512" fill="currentColor">
+              <path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4 5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6-96.9 0-175.5-78.8-175.5-176 0-65.8 36-123.1 89.3-153.3 6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/>
+            </svg>
+          </div>
+
+          <!-- Tai nghe Bluetooth -->
+          <div class="status-icon-white" title="Tai nghe Bluetooth">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2a7 7 0 0 1 14 0v2h-4v8h3c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- 2. Ngày: T2 - 23/11 & Âm lịch -->
+        <div class="date-bar">
+          <span class="solar-date">T2 - 23/11</span>
+          <span class="lunar-pill">14/10 AL</span>
+        </div>
+
+        <!-- 3. Giờ : Phút : Giây nét căng nguyên bản, căn chuẩn tâm -->
+        <div class="time-row-wrap">
+          <div class="time-digits-core">
+            <span class="time-hour" id="watchHour">18</span>
+            <span class="time-colon">:</span>
+            <span class="time-minute" id="watchMin">17</span>
+          </div>
+          <span class="time-second" id="watchSec">52</span>
+        </div>
+
+        <!-- 4. Vùng từ vựng: 2 THANH ĐỨT ĐOẠN SÁT VIỀN (206px) -->
+        <div class="vocab-section">
+          <div class="segmented-bar-wide" id="vocabSegments">
+            <div class="seg-item active-green"></div>
+            <div class="seg-item"></div>
+            <div class="seg-item"></div>
+            <div class="seg-item"></div>
+            <div class="seg-item"></div>
+            <div class="seg-item"></div>
+          </div>
+
+          <div class="vocab-word-row">
+            <span class="vocab-word" id="vocabWord">CADENCE</span>
+            <span class="vocab-pos" id="vocabPos">n.</span>
+          </div>
+          <div class="vocab-phonetic" id="vocabPhonetic">/ˈkeɪ.dəns/</div>
+          <div class="vocab-meaning" id="vocabMeaning">Nhịp chân (bước/phút khi chạy)</div>
+
+          <div class="segmented-bar-wide" id="stepSegments">
+            <div class="seg-item active-green"></div>
+            <div class="seg-item active-green"></div>
+            <div class="seg-item active-green"></div>
+            <div class="seg-item active-green"></div>
+            <div class="seg-item"></div>
+            <div class="seg-item"></div>
+          </div>
+        </div>
+
+        <!-- 5. Dưới cùng: Số bước chân thực tế / mục tiêu -->
+        <div class="step-text-row">
+          <span>👟</span>
+          <span class="step-numbers">7,240</span>
+          <span class="step-goal-text">/ 10,000</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="controls-panel">
+    <button class="btn-sample" onclick="setBatteryDemo(37)">Thử 37%</button>
+    <button class="btn-sample" onclick="setBatteryDemo(86)">Thử 86%</button>
+    <button class="btn-sample" onclick="setBatteryDemo(18)">Thử 18% (yếu)</button>
+    <button class="btn-sample active" onclick="setBatteryDemo(100)">Thử 100% (Pin đầy)</button>
+  </div>
+
+  <div class="notes-card">
+    <b>Đã căn chỉnh & hoàn tất chính xác:</b><br/>
+    • <b>Đầu chóp pin:</b> Khi pin sạc đầy (100%), đầu chóp pin bên phải chuyển sang màu <b>TRẮNG</b> đồng bộ với thân pin (khi chưa đầy giữ màu xám).<br/>
+    • <b>Căn giữa thân pin chuẩn Apple (IMG_0241):</b> Số pin được căn giữa <b>tuyệt đối theo thân pin hình chữ nhật</b> (từ mép trái đến mép phải thân pin), <b>hoàn toàn KHÔNG tính đầu chóp pin</b> bên ngoài. Nhờ đó khoảng cách lề trái và phải của số bên trong thân pin bằng nhau tuyệt đối.<br/>
+    • <b>Icon Mặt trăng DND mập dày:</b> Dạng khối lưỡi liềm đầy đặn, rõ ràng trên màn hình Garmin MIP.<br/>
+    • <b>Giờ:Phút chuẩn tâm 100%:</b> Dấu hai chấm ở đúng tâm màn hình, giây vàng bằng phẳng chân phút.
+  </div>
+</div>
+
+<script>
+  function renderWatchTime() {
+    const d = new Date();
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+    const s = String(d.getSeconds()).padStart(2, '0');
+
+    const hEl = document.getElementById("watchHour");
+    const mEl = document.getElementById("watchMin");
+    const sEl = document.getElementById("watchSec");
+    if (hEl) hEl.textContent = h;
+    if (mEl) mEl.textContent = m;
+    if (sEl) sEl.textContent = s;
+  }
+
+  function setBatteryDemo(pct) {
+    const numEl = document.getElementById("batNum");
+    numEl.innerText = pct;
+    if (pct >= 100) {
+      numEl.style.fontSize = "10px";
+      numEl.style.letterSpacing = "-0.65px";
+    } else {
+      numEl.style.fontSize = "11px";
+      numEl.style.letterSpacing = "-0.4px";
+    }
+
+    const fillEl = document.getElementById("batFill");
+    fillEl.style.width = pct + "%";
+    const nibEl = document.getElementById("batNib");
+
+    if (pct < 20) {
+      fillEl.style.background = "var(--accent-red)";
+      nibEl.style.background = "#616161";
+    } else if (pct >= 100) {
+      fillEl.style.background = "#ffffff";
+      nibEl.style.background = "#ffffff"; // ĐẦY 100% THÌ ĐẦU CHÓP PIN CŨNG MÀU TRẮNG LUÔN
+    } else {
+      fillEl.style.background = "#ffffff";
+      nibEl.style.background = "#616161";
+    }
+
+    document.querySelectorAll(".btn-sample").forEach(b => b.classList.remove("active"));
+    event.target.classList.add("active");
+  }
+
+  setInterval(renderWatchTime, 1000);
+  renderWatchTime();
+</script>
+
+</body>
+</html>

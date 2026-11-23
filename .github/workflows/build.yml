@@ -1,0 +1,44 @@
+name: Build Garmin Watch Face (.PRG)
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build PRG for Forerunner 245 Music
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Generate Developer Signing Key (Automated)
+        run: |
+          # Tự động tạo developer key chuẩn PKCS#8 DER nếu chưa có secret
+          if [ -n "${{ secrets.DEVELOPER_KEY_BASE64 }}" ]; then
+            echo "${{ secrets.DEVELOPER_KEY_BASE64 }}" | base64 --decode > developer_key.der
+            echo "Loaded key from GitHub Secret."
+          else
+            openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:4096 | openssl pkcs8 -topk8 -inform PEM -outform DER -nocrypt -out developer_key.der
+            echo "Auto-generated fresh developer key."
+          fi
+
+      - name: Build Garmin .PRG File
+        uses: blackshadev/garmin-connectiq-build-action@v9
+        with:
+          projectJungle: ./monkey.jungle
+          developerKey: ./developer_key.der
+          device: fr245m
+          outputPath: out/VocaWatchFace_fr245m.prg
+          typeCheck: '0'
+
+      - name: Upload .PRG Artifact (Download để chép vào đồng hồ)
+        uses: actions/upload-artifact@v4
+        with:
+          name: VocaWatchFace-fr245m
+          path: out/VocaWatchFace_fr245m.prg
+          retention-days: 30

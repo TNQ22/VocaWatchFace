@@ -1,0 +1,46 @@
+<resources>
+    <properties>
+        <!-- Chế độ chuyển đổi từ vựng: 0: Theo phút định sẵn, 1: Lắc cổ tay, 2: Theo giờ, 3: Theo ngày -->
+        <property id="WordSwitchMode" type="number">1</property>
+        <!-- Số phút đổi từ nếu chọn chế độ theo phút (ví dụ: 5 phút, 15 phút, 30 phút, 60 phút) -->
+        <property id="WordIntervalMinutes" type="number">15</property>
+        <!-- URL endpoint API đồng bộ từ vựng -->
+        <property id="ApiUrl" type="string">https://my-vocab-api.com/daily-words</property>
+        <!-- Danh sách từ vựng tùy chỉnh (nhập trực tiếp dạng JSON trên điện thoại) -->
+        <property id="CustomVocabJson" type="string"></property>
+        <!-- Chọn chủ đề từ vựng có sẵn: 0: Giao tiếp, 1: IELTS/TOEIC, 2: Chạy bộ & Thể thao, 3: Tự nhập -->
+        <property id="VocabTopic" type="number">0</property>
+    </properties>
+
+    <settings>
+        <setting propertyKey="@Properties.WordSwitchMode" title="@Strings.SettingSwitchModeTitle" prompt="@Strings.SettingSwitchModePrompt">
+            <settingConfig type="list">
+                <listEntry value="1">@Strings.ModeWristShake</listEntry>
+                <listEntry value="0">@Strings.ModeInterval</listEntry>
+                <listEntry value="2">@Strings.ModeHourly</listEntry>
+                <listEntry value="3">@Strings.ModeDaily</listEntry>
+            </settingConfig>
+        </setting>
+
+        <setting propertyKey="@Properties.WordIntervalMinutes" title="@Strings.SettingIntervalTitle" prompt="@Strings.SettingIntervalPrompt">
+            <settingConfig type="numeric" min="1" max="1440" />
+        </setting>
+
+        <setting propertyKey="@Properties.VocabTopic" title="@Strings.SettingTopicTitle" prompt="@Strings.SettingTopicPrompt">
+            <settingConfig type="list">
+                <listEntry value="0">@Strings.TopicGeneral</listEntry>
+                <listEntry value="1">@Strings.TopicIelts</listEntry>
+                <listEntry value="2">@Strings.TopicFitness</listEntry>
+                <listEntry value="3">@Strings.TopicCustom</listEntry>
+            </settingConfig>
+        </setting>
+
+        <setting propertyKey="@Properties.ApiUrl" title="@Strings.SettingApiUrlTitle" prompt="@Strings.SettingApiUrlPrompt">
+            <settingConfig type="alphaNumeric" maxLength="256" />
+        </setting>
+
+        <setting propertyKey="@Properties.CustomVocabJson" title="@Strings.SettingCustomJsonTitle" prompt="@Strings.SettingCustomJsonPrompt">
+            <settingConfig type="alphaNumeric" maxLength="1024" />
+        </setting>
+    </settings>
+</resources>

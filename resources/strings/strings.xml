@@ -1,0 +1,26 @@
+<strings>
+    <string id="AppName">VocaWatchFace</string>
+    
+    <string id="SettingSwitchModeTitle">Chế độ chuyển từ</string>
+    <string id="SettingSwitchModePrompt">Chọn cách thức đổi từ vựng mới</string>
+    <string id="ModeWristShake">Lắc cổ tay (Wake gesture)</string>
+    <string id="ModeInterval">Định kỳ theo phút</string>
+    <string id="ModeHourly">Mỗi giờ 1 từ</string>
+    <string id="ModeDaily">Mỗi ngày 1 từ (Word of Day)</string>
+
+    <string id="SettingIntervalTitle">Khoảng thời gian (phút)</string>
+    <string id="SettingIntervalPrompt">Số phút đổi từ (áp dụng khi chọn chế độ Định kỳ)</string>
+
+    <string id="SettingTopicTitle">Chủ đề từ vựng</string>
+    <string id="SettingTopicPrompt">Chọn bộ từ vựng muốn học</string>
+    <string id="TopicGeneral">Giao tiếp hàng ngày</string>
+    <string id="TopicIelts">IELTS / Học thuật cao cấp</string>
+    <string id="TopicFitness">Chạy bộ & Thể thao</string>
+    <string id="TopicCustom">Tùy chỉnh cá nhân (Web/JSON)</string>
+
+    <string id="SettingApiUrlTitle">Web API Cập nhật từ</string>
+    <string id="SettingApiUrlPrompt">URL máy chủ cung cấp từ vựng hàng ngày</string>
+
+    <string id="SettingCustomJsonTitle">Nhập từ vựng trực tiếp</string>
+    <string id="SettingCustomJsonPrompt">Nhập JSON từ vựng (ví dụ: [{"w":"Run","m":"Chạy"}])</string>
+</strings>
