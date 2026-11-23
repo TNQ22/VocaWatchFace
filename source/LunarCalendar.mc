@@ -131,7 +131,7 @@ module LunarCalendar {
         return result;
     }
 
-    private function getDaysInLunarYear(year as Number) as Number {
+    function getDaysInLunarYear(year as Number) as Number {
         var idx = year - START_YEAR;
         if (idx < 0 || idx >= LUNAR_INFO.size()) {
             return 365;
@@ -149,7 +149,7 @@ module LunarCalendar {
         return sum;
     }
 
-    private function getLeapMonth(year as Number) as Number {
+    function getLeapMonth(year as Number) as Number {
         var idx = year - START_YEAR;
         if (idx < 0 || idx >= LUNAR_INFO.size()) {
             return 0;
@@ -157,7 +157,7 @@ module LunarCalendar {
         return (LUNAR_INFO[idx] >> 16) & 0x0F;
     }
 
-    private function getDaysInLeapMonth(year as Number) as Number {
+    function getDaysInLeapMonth(year as Number) as Number {
         var idx = year - START_YEAR;
         if (idx < 0 || idx >= LUNAR_INFO.size()) {
             return 29;
@@ -165,7 +165,7 @@ module LunarCalendar {
         return ((LUNAR_INFO[idx] & 0x01) != 0) ? 30 : 29;
     }
 
-    private function getDaysInLunarMonth(year as Number, month as Number) as Number {
+    function getDaysInLunarMonth(year as Number, month as Number) as Number {
         var idx = year - START_YEAR;
         if (idx < 0 || idx >= LUNAR_INFO.size()) {
             return 30;
