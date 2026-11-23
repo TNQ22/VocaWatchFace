@@ -1,10 +1,12 @@
 import Toybox.Application;
 import Toybox.Application.Storage;
 import Toybox.Background;
+import Toybox.System;
 import Toybox.Lang;
 import Toybox.Time;
 import Toybox.WatchUi;
 
+(:background)
 class EnglishWatchFaceApp extends Application.AppBase {
 
     private var watchView as EnglishWatchFaceView?;

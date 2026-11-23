@@ -60,9 +60,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
 
     function onUpdate(dc as Graphics.Dc) as Void {
         var width = dc.getWidth();
-        var height = dc.getHeight();
         var centerX = width / 2;
-        var centerY = height / 2;
 
         vocabManager.checkPeriodicUpdate();
 
