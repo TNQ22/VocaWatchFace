@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Garmin FR 245 Music - Green English Face (Clean & Bolder Moon)</title>
+<title>Garmin FR 245 Music - Green English Face (VocaWatchFace v1.2)</title>
 <style>
   :root {
     --bg-watch: #000000;
@@ -13,7 +13,7 @@
     --text-white: #ffffff;
     --text-gray: #b0bec5;
     --icon-white: #ffffff;
-    --seg-track: #152219;
+    --seg-track: #555555;
   }
 
   body {
@@ -99,19 +99,20 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 24px 10px 16px 10px;
+    padding: 22px 10px 18px 10px;
     box-sizing: border-box;
   }
 
-  /* 1. TOP STATUS BAR */
+  /* 1. TOP STATUS BAR: Hạ thấp xuống y=18 để 5 icon hiển thị đủ, không bị viền tròn che */
   .status-bar {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
+    gap: 9px;
     box-sizing: border-box;
     z-index: 2;
+    margin-top: 2px;
   }
 
   .status-icon-white {
@@ -121,16 +122,16 @@
     color: var(--icon-white);
   }
 
-  /* PIN GARMIN CAPSULE (22x10px - THEO ẢNH IMG_0249) */
+  /* PIN GARMIN CAPSULE (22x11px) */
   .battery-capsule-wrap {
     display: inline-flex;
     align-items: center;
     position: relative;
   }
   .battery-capsule-body {
-    width: 20px;
-    height: 10px;
-    border: 1px solid #ffffff;
+    width: 22px;
+    height: 11px;
+    border: 1.5px solid #ffffff;
     border-radius: 2px;
     position: relative;
     padding: 1px;
@@ -146,7 +147,7 @@
   }
   .battery-capsule-nub {
     width: 2px;
-    height: 4px;
+    height: 5px;
     background: #ffffff;
     border-radius: 0 1px 1px 0;
     margin-left: 1px;
@@ -157,36 +158,29 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    font-size: 11px;
+    gap: 10px;
+    font-size: 11.5px;
     font-weight: 700;
-    margin-top: 2px;
+    margin-top: 1px;
   }
   .solar-date {
-    color: #eceff1;
+    color: #cfd8dc;
     letter-spacing: 0.5px;
   }
   .lunar-pill {
-    background: rgba(255, 82, 82, 0.2);
-    border: 1px solid rgba(255, 82, 82, 0.5);
-    color: #ff8a80;
-    padding: 1px 6px;
-    border-radius: 6px;
-    font-size: 9.5px;
+    color: var(--accent-red);
+    font-size: 11.5px;
     font-weight: 700;
   }
 
-  /* 3. TIME DISPLAY CONTAINER (NÉT CĂNG NGUYÊN BẢN CHUẨN PIXEL) */
+  /* 3. TIME DISPLAY CONTAINER (NÂNG LÊN ĐỂ MỞ RỘNG VÙNG HỌC LÊN TRÊN) */
   .time-row-wrap {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: baseline;
     position: relative;
-    margin: -1px 0 1px 0;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
+    margin: -1px 0 0px 0;
   }
   .time-digits-core {
     display: inline-flex;
@@ -199,7 +193,7 @@
     font-weight: 900;
     color: #ffffff;
     line-height: 0.95;
-    letter-spacing: -1.5px;
+    letter-spacing: -1px;
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
   }
   .time-colon {
@@ -216,13 +210,13 @@
     font-weight: 900;
     color: #ffffff;
     line-height: 0.95;
-    letter-spacing: -1.5px;
+    letter-spacing: -1px;
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
   }
   .time-second {
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 800;
-    color: #ffd54f;
+    color: var(--accent-yellow);
     line-height: 1;
     margin-left: 4px;
     font-variant-numeric: tabular-nums;
@@ -230,13 +224,14 @@
     transform: translateY(-2px);
   }
 
-  /* 4. VOCABULARY SECTION (2 THANH ĐỨT ĐOẠN 184PX) */
+  /* 4. VOCABULARY SECTION (2 THANH ĐỨT ĐOẠN 180PX, FONT 17PX TO RÕ) */
   .vocab-section {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4px;
+    margin-top: -2px;
   }
 
   .segmented-bar-wide {
@@ -255,68 +250,66 @@
   }
   .seg-item.active-green {
     background: var(--primary-green);
-    box-shadow: 0 0 5px rgba(0, 230, 118, 0.8);
   }
 
   .vocab-word-row {
     display: flex;
     align-items: baseline;
     justify-content: center;
-    gap: 6px;
+    gap: 7px;
     margin-top: 2px;
   }
   .vocab-word {
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 17px;
+    font-weight: 700;
     letter-spacing: 0.8px;
     color: var(--primary-green);
     text-transform: uppercase;
     font-family: 'Segoe UI', -apple-system, sans-serif;
   }
   .vocab-pos {
-    font-size: 11.5px;
-    font-weight: 400;
+    font-size: 13.5px;
+    font-weight: 500;
     color: #40c4ff;
     font-style: italic;
     font-family: 'Segoe UI', -apple-system, sans-serif;
   }
   .vocab-phonetic {
-    font-size: 13px;
-    font-weight: 400;
+    font-size: 15px;
+    font-weight: 500;
     color: var(--accent-yellow);
     letter-spacing: 0.5px;
     font-family: 'Segoe UI', -apple-system, sans-serif;
   }
   .vocab-meaning {
-    font-size: 12px;
-    font-weight: 400;
+    font-size: 14px;
+    font-weight: 600;
     color: #ffffff;
     margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
-  /* 5. BOTTOM STEP TEXT */
+  /* 5. BOTTOM STEP TEXT & GARMIN SOLE ICON */
   .step-text-row {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    font-size: 11px;
+    gap: 6px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--primary-green);
-    margin-bottom: 2px;
+    margin-bottom: 3px;
   }
   .step-numbers {
-    color: #ffffff;
+    color: var(--primary-green);
     font-variant-numeric: tabular-nums;
   }
   .step-goal-text {
-    color: #78909c;
-    font-size: 10px;
-    font-weight: 600;
+    color: var(--primary-green);
+    font-weight: 700;
   }
 
   /* Controls Panel */
@@ -363,7 +356,7 @@
 <div class="container">
   <div class="header-desc">
     <h2>Garmin Forerunner 245 Music • Green English Face</h2>
-    <p>Icon Mặt trăng DND dày mập rõ nét • Đã xoá đường kẻ đỏ dọc thử nghiệm</p>
+    <p>Hạ thấp thanh 5 icon (không bị khuất viền) • Nâng số giờ phút • Font chữ 17px to rõ sắc nét • Icon Garmin chuẩn</p>
   </div>
 
   <div class="watch-case">
@@ -375,106 +368,101 @@
       <div class="bezel-label label-back">BACK</div>
 
       <div class="screen" id="watchScreen">
-        <!-- Đã xoá hoàn toàn đường kẻ đỏ test trục tâm! -->
-
-        <!-- 1. Top Bar: Pin Garmin capsule + 4 Icon đơn sắc sắc nét (IMG_0249) -->
+        <!-- 1. Top Bar: Pin Garmin + 4 Icon (Báo thức, Phone/BT, Mặt trăng DND, Tai nghe sắc nét không mất điểm ảnh) -->
         <div class="status-bar">
-          <div class="battery-capsule-wrap" title="Pin Garmin: khung viền trắng, ruột xanh/đỏ">
+          <div class="battery-capsule-wrap" title="Pin Garmin: 22x11px">
             <div class="battery-capsule-body">
-              <div class="battery-capsule-fill" id="batFill" style="width: 100%;"></div>
+              <div class="battery-capsule-fill" id="batFill" style="width: 85%;"></div>
             </div>
             <div class="battery-capsule-nub"></div>
           </div>
 
-          <!-- Báo thức (Chuông đôi) -->
+          <!-- Báo thức (Alarm) -->
           <div class="status-icon-white" title="Báo thức">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86L22 5.72zM7.88 3.39L6.6 1.86 2 5.71l1.29 1.53 4.59-3.85zM12.5 8H11v6l4.75 2.85.75-1.23-4-2.37V8zM12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <path d="M2 1h2v1H2zM10 1h2v1h-2zM1 2h2v1H1zM11 2h2v1h-2zM5 3h4v1H5zM3 4h2v1H3zM9 4h2v1H9zM2 5h2v3H2zM10 5h2v3h-2zM6 5h1v2h2v1H6zM3 8h2v1H3zM9 8h2v1H9zM5 9h4v1H5zM3 10h1v1H3zM10 10h1v1h-1zM2 11h1v1H2zM11 11h1v1h-1z"/>
             </svg>
           </div>
 
           <!-- Điện thoại + Bluetooth -->
-          <div class="status-icon-white" id="iconPhoneBt" title="Ống nghe + Bluetooth">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
-              <path d="M12 2l3 3-2.2 2.2 2.2 2.2L12 12.6V8.5h-.8v-1h.8V2zm1 2.2v1.8l1-.9-1-.9zm0 3.8v1.8l1-.9-1-.9z"/>
+          <div class="status-icon-white" id="iconPhoneBt" title="Phone & Bluetooth">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <path d="M4 0h6v1H4zM3 1h8v1H3zM3 2h1v10H3zM10 2h1v10h-1zM6 1h2v1H6zM6 12h2v1H6zM4 13h6v1H4zM6 4h2v1H6zM6 5h1v1H6zM8 5h1v1H8zM6 6h2v1H6zM6 7h1v1H6zM8 7h1v1H8zM6 8h2v1H6z"/>
             </svg>
           </div>
 
-          <!-- Không làm phiền (Mặt trăng khuyết) -->
+          <!-- Không làm phiền (Mặt trăng khuyết đặc) -->
           <div class="status-icon-white" title="Không làm phiền (DND)">
-            <svg width="14" height="14" viewBox="0 0 384 512" fill="currentColor">
-              <path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4 5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6-96.9 0-175.5-78.8-175.5-176 0-65.8 36-123.1 89.3-153.3 6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <path d="M8 1h2v1H8zM6 2h4v1H6zM5 3h4v1H5zM4 4h3v1H4zM3 5h3v3H3zM4 8h3v1H4zM5 9h4v1H5zM6 10h4v1H6zM8 11h2v1H8z"/>
             </svg>
           </div>
 
-          <!-- Tai nghe Bluetooth -->
-          <div class="status-icon-white" title="Tai nghe Bluetooth">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 3a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2a7 7 0 0 1 14 0v2h-4v8h3c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z"/>
+          <!-- Tai nghe Bluetooth sắc nét, vòng cung 2px liền khối, không mất điểm ảnh -->
+          <div class="status-icon-white" title="Tai nghe (Headphone)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+              <path d="M5 0h4v1H5zM3 1h8v1H3zM2 2h3v1H2zM9 2h3v1H9zM2 3h2v1H2zM10 3h2v1h-2zM1 4h3v1H1zM10 4h3v1h-3zM1 5h3v6H1zM10 5h3v6h-3zM2 11h2v1H2zM10 11h2v1h-2z"/>
             </svg>
           </div>
         </div>
 
-        <!-- 2. Ngày: T2 - 23/11 & Âm lịch -->
+        <!-- 2. Ngày: T3 - 24/11 & Âm lịch -->
         <div class="date-bar">
-          <span class="solar-date">T2 - 23/11</span>
-          <span class="lunar-pill">14/10 AL</span>
+          <span class="solar-date">T3 - 24/11</span>
+          <span class="lunar-pill">16/10 AL</span>
         </div>
 
-        <!-- 3. Giờ : Phút : Giây nét căng nguyên bản, căn chuẩn tâm -->
+        <!-- 3. Giờ : Phút : Giây nâng lên timeY = 46 -->
         <div class="time-row-wrap">
           <div class="time-digits-core">
             <span class="time-hour" id="watchHour">18</span>
             <span class="time-colon">:</span>
-            <span class="time-minute" id="watchMin">17</span>
+            <span class="time-minute" id="watchMin">28</span>
           </div>
           <span class="time-second" id="watchSec">52</span>
         </div>
 
-        <!-- 4. Vùng từ vựng: 2 THANH ĐỨT ĐOẠN (184px gọn gàng) -->
+        <!-- 4. Vùng từ vựng: NÂNG LÊN & DÙNG FONT 17PX TO RÕ -->
         <div class="vocab-section">
+          <!-- Thanh trên ngay dưới số giờ phút -->
           <div class="segmented-bar-wide" id="vocabSegments">
+            <div class="seg-item"></div>
+            <div class="seg-item"></div>
+            <div class="seg-item"></div>
+            <div class="seg-item"></div>
             <div class="seg-item active-green"></div>
             <div class="seg-item"></div>
-            <div class="seg-item"></div>
-            <div class="seg-item"></div>
-            <div class="seg-item"></div>
-            <div class="seg-item"></div>
           </div>
 
+          <!-- Từ vựng 17px + Từ loại -->
           <div class="vocab-word-row">
-            <span class="vocab-word" id="vocabWord">ENDURANCE</span>
-            <span class="vocab-pos" id="vocabPos">n.</span>
+            <span class="vocab-word" id="vocabWord">PERSEVERE</span>
+            <span class="vocab-pos" id="vocabPos">v.</span>
           </div>
-          <div class="vocab-phonetic" id="vocabPhonetic">/ɪnˈdʊr.əns/</div>
-          <div class="vocab-meaning" id="vocabMeaning">Sức bền, khả năng dẻo dai</div>
+          <!-- Phiên âm IPA 17px -->
+          <div class="vocab-phonetic" id="vocabPhonetic">/pə:sɪ'vɪər/</div>
+          <!-- Nghĩa tiếng Việt 17px to rõ -->
+          <div class="vocab-meaning" id="vocabMeaning">Kiên trì, bền bỉ vượt khó</div>
 
+          <!-- Thanh dưới tiến độ bước chân -->
           <div class="segmented-bar-wide" id="stepSegments">
             <div class="seg-item active-green"></div>
             <div class="seg-item active-green"></div>
             <div class="seg-item active-green"></div>
             <div class="seg-item active-green"></div>
-            <div class="seg-item"></div>
+            <div class="seg-item active-green"></div>
             <div class="seg-item"></div>
           </div>
         </div>
 
-        <!-- 5. Dưới cùng: Icon dấu chân Bitmap + Số bước thực tế / mục tiêu -->
+        <!-- 5. Dưới cùng: Icon dấu chân Garmin chuẩn + Số bước thực tế / mục tiêu -->
         <div class="step-text-row">
-          <svg width="12" height="14" viewBox="0 0 24 24" fill="var(--primary-green)">
-            <ellipse cx="8" cy="16" rx="4" ry="6"/>
-            <circle cx="5" cy="7" r="1.5"/>
-            <circle cx="8" cy="5" r="1.5"/>
-            <circle cx="11" cy="6" r="1.5"/>
-            <circle cx="13" cy="8" r="1.5"/>
-            <ellipse cx="17" cy="13" rx="3.5" ry="5.5"/>
-            <circle cx="15" cy="4" r="1.3"/>
-            <circle cx="18" cy="3" r="1.3"/>
-            <circle cx="21" cy="5" r="1.3"/>
+          <!-- Garmin stock shoe sole silhouette (14x14) với mũi chân tròn tự nhiên, eo cong và gót chân -->
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="var(--primary-green)">
+            <path d="M4 0h4v1H4zM3 1h6v1H3zM2 2h8v2H2zM2 4h7v1H2zM3 5h5v3H3zM2 8h6v2H2zM3 10h5v1H3zM3 11h4v1H3zM4 12h2v1H4z"/>
           </svg>
-          <span class="step-numbers">7,240</span>
-          <span class="step-goal-text">/ 10,000</span>
+          <span class="step-numbers">3442</span>
+          <span class="step-goal-text">/ 3440</span>
         </div>
 
       </div>
@@ -482,69 +470,43 @@
   </div>
 
   <div class="controls-panel">
-    <button class="btn-sample" onclick="setBatteryDemo(37)">Thử 37%</button>
-    <button class="btn-sample" onclick="setBatteryDemo(86)">Thử 86%</button>
-    <button class="btn-sample" onclick="setBatteryDemo(18)">Thử 18% (yếu)</button>
-    <button class="btn-sample active" onclick="setBatteryDemo(100)">Thử 100% (Pin đầy)</button>
+    <button class="btn-sample active" onclick="setWordDemo(0)">PERSEVERE</button>
+    <button class="btn-sample" onclick="setWordDemo(1)">ENDURANCE</button>
+    <button class="btn-sample" onclick="setWordDemo(2)">CADENCE</button>
+    <button class="btn-sample" onclick="setWordDemo(3)">RESILIENT</button>
   </div>
 
   <div class="notes-card">
-    <b>Đã căn chỉnh & hoàn tất chính xác:</b><br/>
-    • <b>Đầu chóp pin:</b> Khi pin sạc đầy (100%), đầu chóp pin bên phải chuyển sang màu <b>TRẮNG</b> đồng bộ với thân pin (khi chưa đầy giữ màu xám).<br/>
-    • <b>Căn giữa thân pin chuẩn Apple (IMG_0241):</b> Số pin được căn giữa <b>tuyệt đối theo thân pin hình chữ nhật</b> (từ mép trái đến mép phải thân pin), <b>hoàn toàn KHÔNG tính đầu chóp pin</b> bên ngoài. Nhờ đó khoảng cách lề trái và phải của số bên trong thân pin bằng nhau tuyệt đối.<br/>
-    • <b>Icon Mặt trăng DND mập dày:</b> Dạng khối lưỡi liềm đầy đặn, rõ ràng trên màn hình Garmin MIP.<br/>
-    • <b>Giờ:Phút chuẩn tâm 100%:</b> Dấu hai chấm ở đúng tâm màn hình, giây vàng bằng phẳng chân phút.
+    <b>Các điểm cải tiến theo đúng phản hồi:</b><br/>
+    • <b>Font chữ tổng thể to lên (17px):</b> Từ vựng, phiên âm IPA và nghĩa tiếng Việt dùng font Segoe UI 17px to rõ, dễ nhìn trên màn hình Forerunner 245.<br/>
+    • <b>Hạ thấp thanh 5 icon (topY = 18):</b> Giúp thanh thông báo rộng tới 126px, hiển thị đầy đủ cả 5 icon (Pin, Báo thức, Phone/BT, DND Mặt trăng, Tai nghe) mà không bị viền tròn cắt cụt hay ẩn.<br/>
+    • <b>Nâng số đồng hồ lên (timeY = 46, topBarY = 103):</b> Triệt tiêu khoảng trống thừa dưới số giờ phút, tạo không gian thoáng đãng cho phần ngôn ngữ mở rộng lên trên.<br/>
+    • <b>Tai nghe sắc nét không mất điểm ảnh:</b> Vòng cung dày 2px liên tục và hai đệm tai nghe đặc nguyên khối 3x6px.<br/>
+    • <b>Icon bước chân chuẩn Garmin:</b> Hình dáng đế giày thể thao cong tròn tự nhiên ở đầu mũi chân, không còn bị vạt ngang cụt mũi.
   </div>
 </div>
 
 <script>
-  function renderWatchTime() {
-    const d = new Date();
-    const h = String(d.getHours()).padStart(2, '0');
-    const m = String(d.getMinutes()).padStart(2, '0');
-    const s = String(d.getSeconds()).padStart(2, '0');
+  const sampleWords = [
+    { word: "PERSEVERE", pos: "v.", ph: "/pə:sɪ'vɪər/", m: "Kiên trì, bền bỉ vượt khó" },
+    { word: "ENDURANCE", pos: "n.", ph: "/ɪnˈdʊr.əns/", m: "Sức bền, khả năng dẻo dai" },
+    { word: "CADENCE", pos: "n.", ph: "/ˈkeɪ.dəns/", m: "Nhịp chân khi chạy bộ" },
+    { word: "RESILIENT", pos: "adj.", ph: "/rɪˈzɪl.jənt/", m: "Kiên cường, mau hồi phục" }
+  ];
 
-    const hEl = document.getElementById("watchHour");
-    const mEl = document.getElementById("watchMin");
-    const sEl = document.getElementById("watchSec");
-    if (hEl) hEl.textContent = h;
-    if (mEl) mEl.textContent = m;
-    if (sEl) sEl.textContent = s;
+  function setWordDemo(idx) {
+    const item = sampleWords[idx];
+    document.getElementById("vocabWord").textContent = item.word;
+    document.getElementById("vocabPos").textContent = item.pos;
+    document.getElementById("vocabPhonetic").textContent = item.ph;
+    document.getElementById("vocabMeaning").textContent = item.m;
+
+    const btns = document.querySelectorAll(".btn-sample");
+    btns.forEach((b, i) => {
+      if (i === idx) b.classList.add("active");
+      else b.classList.remove("active");
+    });
   }
-
-  function setBatteryDemo(pct) {
-    const numEl = document.getElementById("batNum");
-    numEl.innerText = pct;
-    if (pct >= 100) {
-      numEl.style.fontSize = "10px";
-      numEl.style.letterSpacing = "-0.65px";
-    } else {
-      numEl.style.fontSize = "11px";
-      numEl.style.letterSpacing = "-0.4px";
-    }
-
-    const fillEl = document.getElementById("batFill");
-    fillEl.style.width = pct + "%";
-    const nibEl = document.getElementById("batNib");
-
-    if (pct < 20) {
-      fillEl.style.background = "var(--accent-red)";
-      nibEl.style.background = "#616161";
-    } else if (pct >= 100) {
-      fillEl.style.background = "#ffffff";
-      nibEl.style.background = "#ffffff"; // ĐẦY 100% THÌ ĐẦU CHÓP PIN CŨNG MÀU TRẮNG LUÔN
-    } else {
-      fillEl.style.background = "#ffffff";
-      nibEl.style.background = "#616161";
-    }
-
-    document.querySelectorAll(".btn-sample").forEach(b => b.classList.remove("active"));
-    event.target.classList.add("active");
-  }
-
-  setInterval(renderWatchTime, 1000);
-  renderWatchTime();
 </script>
-
 </body>
 </html>

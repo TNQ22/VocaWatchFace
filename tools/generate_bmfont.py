@@ -4,9 +4,8 @@ from PIL import Image, ImageFont, ImageDraw
 def generate_phonetic_font():
     os.makedirs('resources/fonts', exist_ok=True)
     
-    # Dùng Segoe UI Regular thanh mảnh, sắc nét, các ký tự không bị bết dính
     font_path = 'C:/Windows/Fonts/segoeui.ttf'
-    font_size = 15
+    font_size = 17
     font = ImageFont.truetype(font_path, font_size)
     ascent, descent = font.getmetrics()
     line_height = ascent + descent
@@ -37,19 +36,38 @@ def generate_phonetic_font():
         '\u0261', # ɡ script g
         '\u0294', # ʔ glottal stop
     ]
-    # Standard ASCII chars from 32 to 126 (A-Z, a-z, 0-9, punctuation)
+    
+    # Vietnamese full character set (lowercase and uppercase with tones)
+    vietnamese_chars = list(
+        'àáảãạăắằẳẵặâấầẩẫậ'
+        'èéẻẽẹêếềểễệ'
+        'ìíỉĩị'
+        'òóỏõọôốồổỗộơớờởỡợ'
+        'ùúủũụưứừửữự'
+        'ỳýỷỹỵ'
+        'đ'
+        'ÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬ'
+        'ÈÉẺẼẸÊẾỀỂỄỆ'
+        'ÌÍỈĨỊ'
+        'ÒÓỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢ'
+        'ÙÚỦŨỤƯỨỪỬỮỰ'
+        'ỲÝỶỸỴ'
+        'Đ'
+    )
+    
+    # Standard ASCII chars from 32 to 126
     ascii_chars = [chr(c) for c in range(32, 127)]
-    all_chars = sorted(list(set(ascii_chars + ipa_chars)), key=lambda c: ord(c))
+    all_chars = sorted(list(set(ascii_chars + ipa_chars + vietnamese_chars)), key=lambda c: ord(c))
     
     tex_w = 256
-    tex_h = 128
+    tex_h = 384
     img = Image.new('RGBA', (tex_w, tex_h), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     
     cur_x = 1
     cur_y = 1
     max_row_h = 0
-    padding = 1
+    padding = 2
     
     char_entries = []
     
@@ -101,7 +119,7 @@ def generate_phonetic_font():
         for cid, x, y, w, h, xoff, yoff, adv in char_entries:
             f.write(f'char id={cid:<5} x={x:<4} y={y:<4} width={w:<3} height={h:<3} xoffset={xoff:<3} yoffset={yoff:<3} xadvance={adv:<3} page=0 chnl=15\n')
             
-    print(f'Generated slim regular {len(char_entries)} chars in {fnt_path} and {png_path}')
+    print(f'Generated {font_size}px Segoe UI font ({len(char_entries)} chars) in {fnt_path} and {png_path}')
 
 if __name__ == '__main__':
     generate_phonetic_font()
