@@ -114,9 +114,9 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         if (showMoon) { iconCount++; }
         if (showHeadphone) { iconCount++; }
 
-        var iconSpacing = 5;
+        var iconSpacing = 4;
         var batW = 24; // 22px thân + 2px chóp
-        var iconW = 14; // Icon 14x14 pixel-perfect
+        var iconW = 16; // Icon 16x16 chuẩn sắc nét
         var totalBarW = batW + (iconCount > 0 ? (iconSpacing + iconCount * iconW + (iconCount - 1) * iconSpacing) : 0);
         var curX = centerX - (totalBarW / 2);
         // Hạ thấp thanh thông báo xuống y=18 như cũ để 5 icon hiển thị đầy đủ, không bị viền tròn che khuất
@@ -244,8 +244,8 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         dc.setColor(COLOR_GREEN_MAIN, Graphics.COLOR_TRANSPARENT);
         var stepsText = Lang.format("$1$ / $2$", [steps, stepGoal]);
         var stepTextDim = dc.getTextDimensions(stepsText, stepFont);
-        var footW = 14;
-        var footH = 14;
+        var footW = 16;
+        var footH = 16;
         var footGap = 5;
         var totalStepW = footW + footGap + stepTextDim[0];
         var footStartX = centerX - (totalStepW / 2);
