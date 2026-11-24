@@ -16,12 +16,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Generate Developer Signing Key (Automated)
+      - name: Load Developer Signing Key
         run: |
-          # Tự động tạo developer key chuẩn PKCS#8 DER nếu chưa có secret
+          # Dùng key cố định trong ci/developer_key.der để đảm bảo mọi phiên bản đều cùng 1 chữ ký
           if [ -n "${{ secrets.DEVELOPER_KEY_BASE64 }}" ]; then
             echo "${{ secrets.DEVELOPER_KEY_BASE64 }}" | base64 --decode > developer_key.der
             echo "Loaded key from GitHub Secret."
+          elif [ -f "ci/developer_key.der" ]; then
+            cp ci/developer_key.der developer_key.der
+            echo "Loaded permanent developer key from repository."
           else
             openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:4096 | openssl pkcs8 -topk8 -inform PEM -outform DER -nocrypt -out developer_key.der
             echo "Auto-generated fresh developer key."
