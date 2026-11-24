@@ -100,8 +100,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var minStr = clockTime.min.format("%02d");
         var secStr = clockTime.sec.format("%02d");
 
-        // 3. TOP STATUS BAR: CHUẨN GIAO DIỆN THEO ẢNH IMG_0249
-        // Viên pin 24x12px + các icon 18x18px nét đậm rõ trên MIP
+        // 3. TOP STATUS BAR: Icon nguyên bản (Alarm, Phone/BT, Moon, Headphone) 16x16px + Pin capsule
         var battery = sysStats.battery.toNumber();
         var alarmCount = devSettings.alarmCount;
         var showAlarm = (alarmCount != null && alarmCount > 0);
@@ -115,18 +114,18 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         if (showMoon) { iconCount++; }
         if (showHeadphone) { iconCount++; }
 
-        var iconSpacing = 6;
-        var batW = 26; // 24px thân + 2px chóp
-        var iconW = 18;
+        var iconSpacing = 5;
+        var batW = 24; // 22px thân + 2px chóp
+        var iconW = 16;
         var totalBarW = batW + (iconCount > 0 ? (iconSpacing + iconCount * iconW + (iconCount - 1) * iconSpacing) : 0);
         var curX = centerX - (totalBarW / 2);
-        var topY = 16;
+        var topY = 14;
 
-        // Vẽ viên pin (căn giữa cùng độ cao với icon 18x18)
-        drawCleanBattery(dc, curX, topY + 3, battery);
+        // Vẽ viên pin
+        drawCleanBattery(dc, curX, topY + 2, battery);
         curX += batW + iconSpacing;
 
-        // Vẽ các icon trạng thái bitmap 18x18 đậm nét
+        // Vẽ các icon trạng thái bitmap 16x16
         if (showAlarm && iconAlarm != null) {
             dc.drawBitmap(curX, topY, iconAlarm);
             curX += iconW + iconSpacing;
@@ -154,7 +153,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var solarStr = Lang.format("$1$ - $2$/$3$", [dayOfWeekStr, dateInfo.day.format("%02d"), dateInfo.month.format("%02d")]);
         var lunarStr = lunar.toString();
 
-        var dateY = 37;
+        var dateY = 33;
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         dc.drawText(centerX - 36, dateY, Graphics.FONT_XTINY, solarStr, Graphics.TEXT_JUSTIFY_CENTER);
 
@@ -162,11 +161,12 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         dc.drawText(centerX + 42, dateY, Graphics.FONT_XTINY, lunarStr, Graphics.TEXT_JUSTIFY_CENTER);
 
         // 5. GIỜ - PHÚT: CĂN GIỮA TUYỆT ĐỐI BẰNG THUẬT TOÁN TÁCH 3 PHẦN
-        var timeY = 53;
+        var timeY = 48;
         var timeFont = Graphics.FONT_NUMBER_HOT;
         var colonDim = dc.getTextDimensions(":", timeFont);
+        var digitDim = dc.getTextDimensions("8", timeFont);
         var colonHalfWidth = colonDim[0] / 2;
-        var timeHeight = colonDim[1];
+        var timeHeight = digitDim[1]; // Chiều cao thực của số giờ phút
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 
@@ -193,7 +193,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
             dc.drawText(secX, secY, secFont, secStr, Graphics.TEXT_JUSTIFY_LEFT);
         }
 
-        // 6. VÙNG TỪ VỰNG: 2 THANH ĐỨT ĐOẠN (180px gọn gàng trong mặt tròn)
+        // 6. VÙNG TỪ VỰNG: TỌA ĐỘ TƯƠNG ĐỐI 100%, TUYỆT ĐỐI KHÔNG CHỒNG LÊN SỐ GIỜ
         var word = vocabManager.getCurrentWord();
         var totalWords = vocabManager.getTotalWords();
         var currentVocabIdx = vocabManager.getCurrentIndex();
@@ -201,12 +201,12 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var segBarWidth = 180;
         var barHeight = 4;
 
-        // A. THANH TRÊN: vạch từ vựng hiện tại sáng màu xanh, các vạch khác xám đậm rõ ràng
-        var topBarY = 103;
+        // A. THANH TRÊN: luôn nằm DƯỚI số giờ phút (timeY + timeHeight + 2)
+        var topBarY = timeY + timeHeight + 2;
         drawSegmentedBar(dc, centerX, topBarY, segBarWidth, barHeight, totalWords, currentVocabIdx, COLOR_GREEN_MAIN, true);
 
         // B. NỘI DUNG TỪ VỰNG:
-        // Dòng 1: TỪ VỰNG nhỏ gọn vừa vặn (FONT_SMALL) + Loai từ (Xanh dương)
+        // Dòng 1: TỪ VỰNG nhỏ gọn vừa vặn (FONT_SMALL) + Loại từ (Xanh dương)
         var wordFont = Graphics.FONT_SMALL;
         var wordDim = dc.getTextDimensions(word.word, wordFont);
         var posFont = Graphics.FONT_XTINY;
@@ -215,14 +215,14 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var totalWordW = wordDim[0] + wordPosGap + posDim[0];
 
         // Nếu từ vựng quá dài thì chuyển sang FONT_TINY
-        if (totalWordW > 150) {
+        if (totalWordW > 160) {
             wordFont = Graphics.FONT_TINY;
             wordDim = dc.getTextDimensions(word.word, wordFont);
             totalWordW = wordDim[0] + wordPosGap + posDim[0];
         }
 
         var startWordX = centerX - (totalWordW / 2);
-        var wordY = 110;
+        var wordY = topBarY + 3;
         dc.setColor(COLOR_GREEN_MAIN, Graphics.COLOR_TRANSPARENT);
         dc.drawText(startWordX, wordY, wordFont, word.word, Graphics.TEXT_JUSTIFY_LEFT);
 
@@ -230,19 +230,21 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var posOffsetY = (wordDim[1] - posDim[1]) / 2;
         dc.drawText(startWordX + wordDim[0] + wordPosGap, wordY + posOffsetY, posFont, word.pos, Graphics.TEXT_JUSTIFY_LEFT);
 
-        // Dòng 2: PHIÊN ÂM IPA (Vàng kim, nét đậm bằng BMFont)
-        var phoneticY = 132;
+        // Dòng 2: PHIÊN ÂM IPA (Vàng kim) - luôn nằm dưới từ vựng
+        var phoneticY = wordY + wordDim[1] + 1;
         dc.setColor(COLOR_YELLOW_SEC, Graphics.COLOR_TRANSPARENT);
         var pFont = (phoneticFont != null) ? phoneticFont : Graphics.FONT_XTINY;
         dc.drawText(centerX, phoneticY, pFont, word.phonetic, Graphics.TEXT_JUSTIFY_CENTER);
 
-        // Dòng 3: NGHĨA TIẾNG VIỆT (Trắng)
-        var meaningY = 150;
+        // Dòng 3: NGHĨA TIẾNG VIỆT (Trắng) - luôn nằm dưới phiên âm
+        var phoneticDim = dc.getTextDimensions(word.phonetic, pFont);
+        var meaningY = phoneticY + phoneticDim[1] + 1;
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         dc.drawText(centerX, meaningY, Graphics.FONT_XTINY, word.meaning, Graphics.TEXT_JUSTIFY_CENTER);
 
-        // C. THANH DƯỚI: TRÙNG SỐ VẠCH TIẾN ĐỘ BƯỚC CHÂN
-        var botBarY = 170;
+        // C. THANH DƯỚI: TRÙNG SỐ VẠCH TIẾN ĐỘ BƯỚC CHÂN - luôn nằm dưới nghĩa tiếng Việt
+        var meaningDim = dc.getTextDimensions(word.meaning, Graphics.FONT_XTINY);
+        var botBarY = meaningY + meaningDim[1] + 3;
         var steps = (actInfo.steps != null) ? actInfo.steps : 0;
         var stepGoal = (actInfo.stepGoal != null && actInfo.stepGoal > 0) ? actInfo.stepGoal : 10000;
         var activeStepSegs = ((steps * totalWords * 1.0) / stepGoal).toNumber();
@@ -251,9 +253,8 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         }
         drawSegmentedBar(dc, centerX, botBarY, segBarWidth, barHeight, totalWords, activeStepSegs, COLOR_GREEN_MAIN, false);
 
-        // 7. DƯỚI CÙNG: ICON DẤU CHÂN BITMAP + SỐ BƯỚC THỰC TẾ / MỤC TIÊU
-        // Cách đáy màn hình tận 45px, hoàn toàn không bị tràn viền hay che khuất
-        var stepTextY = 179;
+        // 7. DƯỚI CÙNG: ICON DẤU CHÂN BITMAP + SỐ BƯỚC THỰC TẾ / MỤC TIÊU - luôn nằm dưới thanh dưới
+        var stepTextY = botBarY + 4;
         dc.setColor(COLOR_GREEN_MAIN, Graphics.COLOR_TRANSPARENT);
         var stepsText = Lang.format("$1$ / $2$", [steps, stepGoal]);
         var stepTextDim = dc.getTextDimensions(stepsText, Graphics.FONT_XTINY);
@@ -292,17 +293,17 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         }
     }
 
-    // Vẽ viên pin 24x12px sắc nét phong cách Garmin
+    // Vẽ viên pin sắc nét phong cách Garmin
     private function drawCleanBattery(dc as Graphics.Dc, x as Number, y as Number, pct as Number) as Void {
-        var w = 24;
-        var h = 12;
+        var w = 22;
+        var h = 11;
 
-        // 1. Viền ngoài viên pin bo góc nhẹ 2px
+        // 1. Viền ngoài viên pin bo góc nhẹ
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         dc.drawRoundedRectangle(x, y, w, h, 2);
 
-        // 2. Cực dương bên phải (2x6px)
-        dc.fillRectangle(x + w, y + 3, 2, 6);
+        // 2. Cực dương bên phải (2x5px)
+        dc.fillRectangle(x + w, y + 3, 2, 5);
 
         // 3. Mức pin sạc (Xanh lá nếu > 20%, Đỏ nếu <= 20%)
         var maxFillW = w - 4;
