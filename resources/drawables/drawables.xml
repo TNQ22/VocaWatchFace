@@ -5,4 +5,5 @@
     <bitmap id="IconHeadphone" filename="icon_headphone.png" />
     <bitmap id="IconPhoneBt" filename="icon_phone_bt.png" />
     <bitmap id="IconFootprints" filename="icon_footprints.png" />
+    <bitmap id="IconHeart" filename="icon_heart.png" />
 </drawables>

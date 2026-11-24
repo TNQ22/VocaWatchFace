@@ -8,3 +8,4 @@ out/
 .dev_tools/
 .system_generated/
 *.tmp
+/*.png
