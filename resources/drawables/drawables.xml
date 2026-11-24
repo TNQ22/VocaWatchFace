@@ -1,3 +1,8 @@
 <drawables>
     <bitmap id="LauncherIcon" filename="launcher_icon.png" />
+    <bitmap id="IconAlarm" filename="icon_alarm.png" />
+    <bitmap id="IconMoon" filename="icon_moon.png" />
+    <bitmap id="IconHeadphone" filename="icon_headphone.png" />
+    <bitmap id="IconPhoneBt" filename="icon_phone_bt.png" />
+    <bitmap id="IconFootprints" filename="icon_footprints.png" />
 </drawables>

@@ -12,13 +12,20 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
     private var vocabManager as VocabularyManager;
     private var isAwake as Boolean = true;
 
+    // Loaded Resources
+    private var iconAlarm as WatchUi.BitmapResource?;
+    private var iconMoon as WatchUi.BitmapResource?;
+    private var iconHeadphone as WatchUi.BitmapResource?;
+    private var iconPhoneBt as WatchUi.BitmapResource?;
+    private var iconFootprints as WatchUi.BitmapResource?;
+    private var phoneticFont as WatchUi.FontResource?;
+
     // Bảng màu chuẩn Garmin
     const COLOR_GREEN_MAIN = 0x00E676;  // Xanh lá thể thao chủ đạo
-    const COLOR_RED_ALERT  = 0xFF5252;  // Đỏ cảnh báo pin yếu
-    const COLOR_SEG_BG     = 0x152219;  // Nền vạch đứt đoạn chưa sáng
+    const COLOR_RED_ALERT  = 0xFF5252;  // Đỏ cảnh báo / Âm lịch
+    const COLOR_SEG_BG     = 0x222222;  // Nền vạch đứt đoạn chưa sáng
     const COLOR_YELLOW_SEC = 0xFFD54F;  // Vàng kim giây & phiên âm IPA
     const COLOR_WHITE_ICON = 0xFFFFFF;  // Trắng cho toàn bộ icon trạng thái
-    const COLOR_GRAY_BAT   = 0x616161;  // Xám trung tính cho phần pin đã tụt
 
     function initialize() {
         WatchFace.initialize();
@@ -27,6 +34,12 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
     }
 
     function onLayout(dc as Graphics.Dc) as Void {
+        iconAlarm = WatchUi.loadResource(Rez.Drawables.IconAlarm) as WatchUi.BitmapResource;
+        iconMoon = WatchUi.loadResource(Rez.Drawables.IconMoon) as WatchUi.BitmapResource;
+        iconHeadphone = WatchUi.loadResource(Rez.Drawables.IconHeadphone) as WatchUi.BitmapResource;
+        iconPhoneBt = WatchUi.loadResource(Rez.Drawables.IconPhoneBt) as WatchUi.BitmapResource;
+        iconFootprints = WatchUi.loadResource(Rez.Drawables.IconFootprints) as WatchUi.BitmapResource;
+        phoneticFont = WatchUi.loadResource(Rez.Fonts.PhoneticFont) as WatchUi.FontResource;
     }
 
     function onShow() as Void {
@@ -87,40 +100,51 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var minStr = clockTime.min.format("%02d");
         var secStr = clockTime.sec.format("%02d");
 
-        // 3. TOP STATUS BAR: CHUẨN THEO ẢNH IMG_0235
-        // Viên pin thu nhỏ gọn (22x12px), số đen to đậm ở giữa + 4 Icon trắng
-        var topY = 20;
-        var iconSpacing = 19;
-        var curX = centerX - 50;
-
-        // A. VIÊN PIN NHỎ GỌN CHUẨN IOS (24x12px), CĂN CHUẨN THÂN PIN (IMG_0241)
+        // 3. TOP STATUS BAR: CHUẨN GIAO DIỆN THEO ẢNH IMG_0249
+        // Viên pin bo góc sạch sẽ + 4 icon bitmap (Alarm, Phone/BT, Moon, Headphone)
         var battery = sysStats.battery.toNumber();
-        drawCompactIosBattery(dc, curX, topY, battery);
-        curX += 30;
-
-        // B. BÁO THỨC (Alarm - Chuông đôi màu TRẮNG)
         var alarmCount = devSettings.alarmCount;
-        if (alarmCount != null && alarmCount > 0) {
-            drawAlarmIcon(dc, curX, topY);
-            curX += iconSpacing;
+        var showAlarm = (alarmCount != null && alarmCount > 0);
+        var showPhone = devSettings.phoneConnected;
+        var showMoon = (devSettings has :doNotDisturb && devSettings.doNotDisturb);
+        var showHeadphone = true;
+
+        var iconCount = 0;
+        if (showAlarm) { iconCount++; }
+        if (showPhone) { iconCount++; }
+        if (showMoon) { iconCount++; }
+        if (showHeadphone) { iconCount++; }
+
+        var iconSpacing = 5;
+        var batW = 22;
+        var iconW = 14;
+        var totalBarW = batW + (iconCount > 0 ? (iconSpacing + iconCount * iconW + (iconCount - 1) * iconSpacing) : 0);
+        var curX = centerX - (totalBarW / 2);
+        var topY = 16;
+
+        // Vẽ viên pin
+        drawCleanBattery(dc, curX, topY + 2, battery);
+        curX += batW + iconSpacing;
+
+        // Vẽ các icon trạng thái bitmap chất lượng cao
+        if (showAlarm && iconAlarm != null) {
+            dc.drawBitmap(curX, topY, iconAlarm);
+            curX += iconW + iconSpacing;
+        }
+        if (showPhone && iconPhoneBt != null) {
+            dc.drawBitmap(curX, topY, iconPhoneBt);
+            curX += iconW + iconSpacing;
+        }
+        if (showMoon && iconMoon != null) {
+            dc.drawBitmap(curX, topY, iconMoon);
+            curX += iconW + iconSpacing;
+        }
+        if (showHeadphone && iconHeadphone != null) {
+            dc.drawBitmap(curX, topY, iconHeadphone);
+            curX += iconW + iconSpacing;
         }
 
-        // C. ĐIỆN THOẠI + BLUETOOTH (Ống nghe cong có logo BT ở giữa, màu TRẮNG, ẩn khi ngắt)
-        if (devSettings.phoneConnected) {
-            drawPhoneBtHandset(dc, curX, topY);
-            curX += iconSpacing;
-        }
-
-        // D. KHÔNG LÀM PHIỀN (Mặt trăng khuyết MẬP MẠP, DÀY DẶN, RÕ NÉT HƠN)
-        if (devSettings has :doNotDisturb && devSettings.doNotDisturb) {
-            drawBolderMoonIcon(dc, curX, topY);
-            curX += iconSpacing;
-        }
-
-        // E. TAI NGHE (Headphone over-ear màu TRẮNG)
-        drawHeadphoneIcon(dc, curX, topY);
-
-        // 4. NGÀY: "T2 - 23/11" & ÂM LỊCH 2026
+        // 4. NGÀY: "T2 - 23/11" & ÂM LỊCH
         var now = Time.now();
         var dateInfo = Gregorian.info(now, Time.FORMAT_SHORT);
         var lunar = LunarCalendar.getLunarDate(dateInfo.year, dateInfo.month, dateInfo.day);
@@ -130,17 +154,15 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var solarStr = Lang.format("$1$ - $2$/$3$", [dayOfWeekStr, dateInfo.day.format("%02d"), dateInfo.month.format("%02d")]);
         var lunarStr = lunar.toString();
 
+        var dateY = topY + 18;
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(centerX - 36, topY + 20, Graphics.FONT_XTINY, solarStr, Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(centerX - 36, dateY, Graphics.FONT_XTINY, solarStr, Graphics.TEXT_JUSTIFY_CENTER);
 
         dc.setColor(COLOR_RED_ALERT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(centerX + 42, topY + 20, Graphics.FONT_XTINY, lunarStr, Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(centerX + 42, dateY, Graphics.FONT_XTINY, lunarStr, Graphics.TEXT_JUSTIFY_CENTER);
 
         // 5. GIỜ - PHÚT: CĂN GIỮA TUYỆT ĐỐI BẰNG THUẬT TOÁN TÁCH 3 PHẦN
-        // Dấu hai chấm ":" được vẽ tại đúng centerX (120px)
-        // Số giờ vẽ bên trái dấu hai chấm (TEXT_JUSTIFY_RIGHT)
-        // Số phút vẽ bên phải dấu hai chấm (TEXT_JUSTIFY_LEFT)
-        var timeY = topY + 36;
+        var timeY = dateY + 17;
         var timeFont = Graphics.FONT_NUMBER_HOT;
         var colonDim = dc.getTextDimensions(":", timeFont);
         var colonHalfWidth = colonDim[0] / 2;
@@ -158,7 +180,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var minX = centerX + colonHalfWidth + 1;
         dc.drawText(minX, timeY, timeFont, minStr, Graphics.TEXT_JUSTIFY_LEFT);
 
-        // 4. Số Giây: Đặt ngay bên phải số phút, dóng chân thẳng hàng với phút
+        // 4. Số Giây: Đặt ngay bên phải số phút
         if (isAwake) {
             var secFont = Graphics.FONT_TINY;
             var minDim = dc.getTextDimensions(minStr, timeFont);
@@ -171,36 +193,58 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
             dc.drawText(secX, secY, secFont, secStr, Graphics.TEXT_JUSTIFY_LEFT);
         }
 
-        // 6. VÙNG TỪ VỰNG: 2 THANH ĐỨT ĐOẠN KÉO DÀI SÁT VIỀN (206px)
+        // 6. VÙNG TỪ VỰNG: 2 THANH ĐỨT ĐOẠN (184px gọn gàng trong mặt tròn)
         var word = vocabManager.getCurrentWord();
         var totalWords = vocabManager.getTotalWords();
         var currentVocabIdx = vocabManager.getCurrentIndex();
 
-        var segBarWidth = 206;
+        var segBarWidth = 184;
         var barHeight = 3;
 
-        // A. THANH TRÊN: Kéo dài sát viền, vạch từ vựng hiện tại sáng màu xanh
-        var topBarY = timeY + timeHeight + 4;
+        // A. THANH TRÊN: vạch từ vựng hiện tại sáng màu xanh
+        var topBarY = timeY + timeHeight + 3;
         drawSegmentedBar(dc, centerX, topBarY, segBarWidth, barHeight, totalWords, currentVocabIdx, COLOR_GREEN_MAIN, true);
 
         // B. NỘI DUNG TỪ VỰNG
-        // Dòng 1: TỪ VỰNG (Xanh lá) + Loại từ
+        // Dòng 1: TỪ VỰNG (Xanh lá) + Loại từ (Xanh dương), CĂN GIỮA TOÀN BỘ KHÔNG BỊ TRÀN VIỀN
+        var wordFont = Graphics.FONT_MEDIUM;
+        var wordDim = dc.getTextDimensions(word.word, wordFont);
+        var posFont = Graphics.FONT_XTINY;
+        var posDim = dc.getTextDimensions(word.pos, posFont);
+        var wordPosGap = 6;
+        var totalWordW = wordDim[0] + wordPosGap + posDim[0];
+
+        // Tự động thu nhỏ font nếu từ dài (như ENDURANCE, PERSEVERE)
+        if (totalWordW > 170) {
+            wordFont = Graphics.FONT_SMALL;
+            wordDim = dc.getTextDimensions(word.word, wordFont);
+            totalWordW = wordDim[0] + wordPosGap + posDim[0];
+        }
+
+        var startWordX = centerX - (totalWordW / 2);
+        var wordY = topBarY + 5;
         dc.setColor(COLOR_GREEN_MAIN, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(centerX - 10, topBarY + 4, Graphics.FONT_MEDIUM, word.word, Graphics.TEXT_JUSTIFY_RIGHT);
+        dc.drawText(startWordX, wordY, wordFont, word.word, Graphics.TEXT_JUSTIFY_LEFT);
 
         dc.setColor(0x40C4FF, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(centerX - 4, topBarY + 8, Graphics.FONT_XTINY, word.pos, Graphics.TEXT_JUSTIFY_LEFT);
+        var posOffsetY = (wordDim[1] - posDim[1]) / 2 + 1;
+        dc.drawText(startWordX + wordDim[0] + wordPosGap, wordY + posOffsetY, posFont, word.pos, Graphics.TEXT_JUSTIFY_LEFT);
 
-        // Dòng 2: PHIÊN ÂM IPA (Vàng)
+        // Dòng 2: PHIÊN ÂM IPA (Vàng kim, hiển thị chuẩn IPA bằng BMFont)
+        var phoneticY = wordY + wordDim[1] + 1;
         dc.setColor(COLOR_YELLOW_SEC, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(centerX, topBarY + 22, Graphics.FONT_XTINY, word.phonetic, Graphics.TEXT_JUSTIFY_CENTER);
+        var pFont = (phoneticFont != null) ? phoneticFont : Graphics.FONT_XTINY;
+        dc.drawText(centerX, phoneticY, pFont, word.phonetic, Graphics.TEXT_JUSTIFY_CENTER);
 
         // Dòng 3: NGHĨA TIẾNG VIỆT (Trắng)
+        var phoneticDim = dc.getTextDimensions(word.phonetic, pFont);
+        var meaningY = phoneticY + phoneticDim[1] + 1;
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(centerX, topBarY + 36, Graphics.FONT_XTINY, word.meaning, Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(centerX, meaningY, Graphics.FONT_XTINY, word.meaning, Graphics.TEXT_JUSTIFY_CENTER);
 
-        // C. THANH DƯỚI: TRÙNG SỐ VẠCH & KÉO DÀI SÁT VIỀN (206px)
-        var botBarY = topBarY + 52;
+        // C. THANH DƯỚI: TRÙNG SỐ VẠCH TIẾN ĐỘ BƯỚC CHÂN
+        var meaningDim = dc.getTextDimensions(word.meaning, Graphics.FONT_XTINY);
+        var botBarY = meaningY + meaningDim[1] + 4;
         var steps = (actInfo.steps != null) ? actInfo.steps : 0;
         var stepGoal = (actInfo.stepGoal != null && actInfo.stepGoal > 0) ? actInfo.stepGoal : 10000;
         var activeStepSegs = ((steps * totalWords * 1.0) / stepGoal).toNumber();
@@ -209,11 +253,21 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         }
         drawSegmentedBar(dc, centerX, botBarY, segBarWidth, barHeight, totalWords, activeStepSegs, COLOR_GREEN_MAIN, false);
 
-        // 7. DƯỚI CÙNG: SỐ BƯỚC THỰC TẾ / MỤC TIÊU
-        var stepTextY = botBarY + 6;
+        // 7. DƯỚI CÙNG: ICON DẤU CHÂN BITMAP + SỐ BƯỚC THỰC TẾ / MỤC TIÊU
+        var stepTextY = botBarY + 5;
         dc.setColor(COLOR_GREEN_MAIN, Graphics.COLOR_TRANSPARENT);
-        var stepsText = Lang.format("👟 $1$ / $2$", [steps, stepGoal]);
-        dc.drawText(centerX, stepTextY, Graphics.FONT_XTINY, stepsText, Graphics.TEXT_JUSTIFY_CENTER);
+        var stepsText = Lang.format("$1$ / $2$", [steps, stepGoal]);
+        var stepTextDim = dc.getTextDimensions(stepsText, Graphics.FONT_XTINY);
+        var footW = 12;
+        var footH = 14;
+        var footGap = 5;
+        var totalStepW = footW + footGap + stepTextDim[0];
+        var footStartX = centerX - (totalStepW / 2);
+
+        if (iconFootprints != null) {
+            dc.drawBitmap(footStartX, stepTextY + (stepTextDim[1] - footH) / 2, iconFootprints);
+        }
+        dc.drawText(footStartX + footW + footGap, stepTextY, Graphics.FONT_XTINY, stepsText, Graphics.TEXT_JUSTIFY_LEFT);
     }
 
     // Vẽ thanh đứt đoạn (Segmented Bar)
@@ -238,77 +292,37 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         }
     }
 
-    // Icon Pin nhỏ gọn chuẩn phong cách iOS (IMG_0235, IMG_0241)
-    private function drawCompactIosBattery(dc as Graphics.Dc, x as Number, y as Number, pct as Number) as Void {
-        var w = 24;
-        var h = 12;
+    // Vẽ viên pin sắc nét phong cách Garmin
+    private function drawCleanBattery(dc as Graphics.Dc, x as Number, y as Number, pct as Number) as Void {
+        var w = 20;
+        var h = 10;
 
-        // 1. Thân pin bo nhẹ góc 2px
-        dc.setColor(COLOR_GRAY_BAT, Graphics.COLOR_TRANSPARENT);
-        dc.fillRoundedRectangle(x, y + 1, w, h, 2);
+        // 1. Viền ngoài viên pin bo góc nhẹ
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        dc.drawRoundedRectangle(x, y, w, h, 2);
 
-        // 2. Mức pin sạc (Màu TRẮNG; <20% chuyển ĐỎ)
-        var isFull = (pct >= 100);
-        var fillColor = (pct > 20) ? COLOR_WHITE_ICON : COLOR_RED_ALERT;
-        var fillW = ((pct * w) / 100).toNumber();
-        if (fillW > 0) {
-            dc.setColor(fillColor, Graphics.COLOR_TRANSPARENT);
-            dc.fillRoundedRectangle(x, y + 1, fillW, h, 2);
+        // 2. Cực dương bên phải
+        dc.fillRectangle(x + w, y + 3, 2, 4);
+
+        // 3. Mức pin sạc (Xanh lá nếu > 20%, Đỏ nếu <= 20%)
+        var maxFillW = w - 4;
+        var fillW = (maxFillW * pct) / 100;
+        if (pct > 0 && fillW < 1) {
+            fillW = 1;
+        }
+        if (fillW > maxFillW) {
+            fillW = maxFillW;
         }
 
-        // 3. Đầu chóp pin bên phải: ĐẦY (100%) THÌ MÀU TRẮNG LUÔN, chưa đầy thì màu xám
-        var nibColor = isFull ? COLOR_WHITE_ICON : COLOR_GRAY_BAT;
-        dc.setColor(nibColor, Graphics.COLOR_TRANSPARENT);
-        dc.fillRoundedRectangle(x + w, y + 4, 2, 5, 1);
+        if (pct <= 20) {
+            dc.setColor(COLOR_RED_ALERT, Graphics.COLOR_TRANSPARENT);
+        } else {
+            dc.setColor(COLOR_GREEN_MAIN, Graphics.COLOR_TRANSPARENT);
+        }
 
-        // 4. Chữ số pin: CĂN GIỮA TUYỆT ĐỐI THEO THÂN PIN (từ x đến x + w, tâm là x + w/2)
-        // HOÀN TOÀN KHÔNG TÍNH ĐẦU CHÓP PIN ĐỂ TRÁNH BỊ LỆCH SANG PHẢI
-        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-        var batStr = Lang.format("$1$", [pct]);
-        var bodyCenterX = x + (w / 2);
-        var bodyCenterY = y + 1 + (h / 2);
-        dc.drawText(bodyCenterX, bodyCenterY, Graphics.FONT_XTINY, batStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-        dc.drawText(bodyCenterX + 1, bodyCenterY, Graphics.FONT_XTINY, batStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-    }
-
-    // Icon Báo thức (Alarm) - Chuông đôi màu trắng
-    private function drawAlarmIcon(dc as Graphics.Dc, x as Number, y as Number) as Void {
-        dc.setColor(COLOR_WHITE_ICON, Graphics.COLOR_TRANSPARENT);
-        dc.drawCircle(x + 6, y + 6, 5);
-        dc.drawLine(x + 6, y + 3, x + 6, y + 6);
-        dc.drawLine(x + 6, y + 6, x + 9, y + 6);
-        dc.drawLine(x + 2, y + 1, x + 4, y + 3);
-        dc.drawLine(x + 10, y + 1, x + 8, y + 3);
-    }
-
-    // Icon Ống nghe điện thoại có logo Bluetooth ở giữa (Chuẩn ảnh IMG_0222)
-    private function drawPhoneBtHandset(dc as Graphics.Dc, x as Number, y as Number) as Void {
-        dc.setColor(COLOR_WHITE_ICON, Graphics.COLOR_TRANSPARENT);
-        dc.drawArc(x + 6, y + 6, 5, Graphics.ARC_CLOCKWISE, 135, 315);
-        dc.fillCircle(x + 3, y + 3, 2);
-        dc.fillCircle(x + 9, y + 9, 2);
-        dc.drawLine(x + 6, y + 3, x + 6, y + 9);
-        dc.drawLine(x + 6, y + 4, x + 8, y + 6);
-        dc.drawLine(x + 8, y + 6, x + 6, y + 8);
-    }
-
-    // Icon Không làm phiền (Mặt trăng khuyết MẬP MẠP, DÀY DẶN HƠN)
-    private function drawBolderMoonIcon(dc as Graphics.Dc, x as Number, y as Number) as Void {
-        // Vẽ mặt trăng khuyết mập mạp: hình tròn trắng bán kính 6px
-        dc.setColor(COLOR_WHITE_ICON, Graphics.COLOR_TRANSPARENT);
-        dc.fillCircle(x + 5, y + 6, 6);
-
-        // Khoét lõm bằng hình tròn đen lệch sang phải (x+9, y+4, r=5) để lại bụng trăng dày ~5px
-        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
-        dc.fillCircle(x + 9, y + 4, 5);
-    }
-
-    // Icon Tai nghe nhạc Bluetooth (Quai over-ear màu trắng)
-    private function drawHeadphoneIcon(dc as Graphics.Dc, x as Number, y as Number) as Void {
-        dc.setColor(COLOR_WHITE_ICON, Graphics.COLOR_TRANSPARENT);
-        dc.drawArc(x + 6, y + 5, 5, Graphics.ARC_CLOCKWISE, 180, 0);
-        dc.fillRectangle(x + 1, y + 5, 2, 5);
-        dc.fillRectangle(x + 9, y + 5, 2, 5);
+        if (fillW > 0) {
+            dc.fillRectangle(x + 2, y + 2, fillW, h - 4);
+        }
     }
 
     function onHide() as Void {
