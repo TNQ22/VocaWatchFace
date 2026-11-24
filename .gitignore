@@ -1,0 +1,10 @@
+# Build artifacts
+bin/
+out/
+*.prg
+*.iq
+
+# Dev tools & SDKs
+.dev_tools/
+.system_generated/
+*.tmp
