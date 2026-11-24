@@ -4,8 +4,8 @@ from PIL import Image, ImageFont, ImageDraw
 def generate_phonetic_font():
     os.makedirs('resources/fonts', exist_ok=True)
     
-    # 16px Segoe UI is clean, clear, and perfectly fits FR245 240x240 screen
-    font_path = 'C:/Windows/Fonts/segoeui.ttf'
+    # Dùng Segoe UI Bold để các nét ký tự IPA dày dặn (2px), không bị mờ/mất điểm ảnh trên màn hình MIP
+    font_path = 'C:/Windows/Fonts/segoeuib.ttf'
     font_size = 15
     font = ImageFont.truetype(font_path, font_size)
     ascent, descent = font.getmetrics()
@@ -75,7 +75,7 @@ def generate_phonetic_font():
             cur_y += max_row_h + padding
             max_row_h = 0
             
-        # Draw glyph in white
+        # Draw glyph in pure white with strong alpha for crisp MIP visibility
         draw.text((cur_x - bbox[0], cur_y - bbox[1]), c, font=font, fill=(255, 255, 255, 255), anchor='ls')
         
         xoffset = bbox[0]
@@ -94,14 +94,14 @@ def generate_phonetic_font():
     # Save .fnt text file
     fnt_path = 'resources/fonts/phonetic.fnt'
     with open(fnt_path, 'w', encoding='utf-8') as f:
-        f.write(f'info face="Segoe UI" size={font_size} bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1\n')
+        f.write(f'info face="Segoe UI Bold" size={font_size} bold=1 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1\n')
         f.write(f'common lineHeight={line_height} base={base} scaleW={tex_w} scaleH={tex_h} pages=1 packed=0\n')
         f.write('page id=0 file="phonetic_0.png"\n')
         f.write(f'chars count={len(char_entries)}\n')
         for cid, x, y, w, h, xoff, yoff, adv in char_entries:
             f.write(f'char id={cid:<5} x={x:<4} y={y:<4} width={w:<3} height={h:<3} xoffset={xoff:<3} yoffset={yoff:<3} xadvance={adv:<3} page=0 chnl=15\n')
             
-    print(f'Generated {len(char_entries)} chars in {fnt_path} and {png_path}')
+    print(f'Generated bold {len(char_entries)} chars in {fnt_path} and {png_path}')
 
 if __name__ == '__main__':
     generate_phonetic_font()
