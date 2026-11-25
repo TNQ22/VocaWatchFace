@@ -37,11 +37,12 @@ module LunarCalendar {
         var day as Number = 1;
         var month as Number = 1;
         var year as Number = 2026;
+        var daysInMonth as Number = 30;
         var isLeapMonth as Boolean = false;
 
         function toString() as String {
             var prefix = isLeapMonth ? "N" : "";
-            return Lang.format("$1$$2$/$3$ AL", [prefix, day, month]);
+            return Lang.format("$1$$2$/$3$", [prefix, day, month]);
         }
     }
 
@@ -104,14 +105,15 @@ module LunarCalendar {
         var leapMonth = getLeapMonth(lYear);
         var isLeap = false;
         var lMonth = 1;
+        var curDaysInMonth = 30;
 
         while (lMonth <= 12) {
-            var daysInMonth = isLeap ? getDaysInLeapMonth(lYear) : getDaysInLunarMonth(lYear, lMonth);
+            curDaysInMonth = isLeap ? getDaysInLeapMonth(lYear) : getDaysInLunarMonth(lYear, lMonth);
 
-            if (offsetDays < daysInMonth) {
+            if (offsetDays < curDaysInMonth) {
                 break;
             }
-            offsetDays -= daysInMonth;
+            offsetDays -= curDaysInMonth;
 
             // Xử lý tháng nhuận
             if (leapMonth > 0 && lMonth == leapMonth && !isLeap) {
@@ -126,6 +128,7 @@ module LunarCalendar {
 
         result.month = lMonth;
         result.day = offsetDays + 1;
+        result.daysInMonth = curDaysInMonth;
         result.isLeapMonth = isLeap;
 
         return result;
