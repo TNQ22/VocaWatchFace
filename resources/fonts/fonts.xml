@@ -1,4 +1,5 @@
 <fonts>
     <font id="PhoneticFont" filename="phonetic.fnt" antialias="true" />
     <font id="MeaningFont" filename="meaning.fnt" antialias="true" />
+    <font id="BadgeFont" filename="badge.fnt" antialias="true" />
 </fonts>

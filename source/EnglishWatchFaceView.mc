@@ -22,6 +22,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
     private var iconHeart as WatchUi.BitmapResource?;
     private var phoneticFont as WatchUi.FontResource?;
     private var meaningFont as WatchUi.FontResource?;
+    private var badgeFont as WatchUi.FontResource?;
 
     // Bảng màu chuẩn Garmin (chuẩn palette 64 màu của MIP display)
     const COLOR_GREEN_MAIN = 0x00E676;  // Xanh lá thể thao chủ đạo
@@ -45,6 +46,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         iconHeart = WatchUi.loadResource(Rez.Drawables.IconHeart) as WatchUi.BitmapResource;
         phoneticFont = WatchUi.loadResource(Rez.Fonts.PhoneticFont) as WatchUi.FontResource;
         meaningFont = WatchUi.loadResource(Rez.Fonts.MeaningFont) as WatchUi.FontResource;
+        badgeFont = WatchUi.loadResource(Rez.Fonts.BadgeFont) as WatchUi.FontResource;
     }
 
     function onShow() as Void {
@@ -416,10 +418,15 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         dc.fillRectangle(x + w + 1, y + 4, 1, 6);
         dc.fillRectangle(x + w + 2, y + 5, 1, 4);
 
-        // 4. Chữ số pin màu đen: trừ 2px theo trục Y để cân chính giữa thân pin
+        // 4. Chữ số pin màu đen: dùng BadgeFont 10px chuẩn xác đặt tại y + 2 (trên 2px, dưới 2px cân đối tuyệt đối)
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
         var batStr = Lang.format("$1$", [pct]);
-        dc.drawText(x + (w / 2), y + (h / 2) - 2, Graphics.FONT_XTINY, batStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        var numFont = (badgeFont != null) ? badgeFont : Graphics.FONT_XTINY;
+        if (badgeFont != null) {
+            dc.drawText(x + (w / 2), y + 2, numFont, batStr, Graphics.TEXT_JUSTIFY_CENTER);
+        } else {
+            dc.drawText(x + (w / 2), y + (h / 2) - 1, numFont, batStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        }
     }
 
     // Icon Thông báo nền trắng bo tròn dạng bong bóng tin nhắn, ghi số thông báo trực tiếp bên trong
@@ -430,9 +437,14 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         // Đuôi nhọn bong bóng tin nhắn ở góc dưới bên trái
         dc.fillPolygon([[x + 3, y + h - 1], [x + 7, y + h - 1], [x + 2, y + h + 2]]);
 
-        // Số thông báo màu đen: trừ 2px để cân chính giữa phần thân bong bóng (h=14)
+        // Số thông báo màu đen: dùng BadgeFont 10px đặt tại y + 2 (cách đều trên 2px, dưới 2px)
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(x + (w / 2), y + (h / 2) - 2, Graphics.FONT_XTINY, notifStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        var numFont = (badgeFont != null) ? badgeFont : Graphics.FONT_XTINY;
+        if (badgeFont != null) {
+            dc.drawText(x + (w / 2), y + 2, numFont, notifStr, Graphics.TEXT_JUSTIFY_CENTER);
+        } else {
+            dc.drawText(x + (w / 2), y + (h / 2) - 1, numFont, notifStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        }
     }
 
     function onHide() as Void {
