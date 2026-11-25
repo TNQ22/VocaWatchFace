@@ -7,9 +7,12 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "--- Pushing to Simulator ---"
-java -classpath "$sdk\bin\monkeybrains.jar" com.garmin.monkeybrains.monkeydodeux.MonkeyDoDeux -f "out\VocaWatchFace_fr245m.prg" -d fr245m -s "$sdk\bin\shell.exe"
-
+$proc = Start-Process -FilePath "java" -ArgumentList "-classpath `"$sdk\bin\monkeybrains.jar`" com.garmin.monkeybrains.monkeydodeux.MonkeyDoDeux -f `"out\VocaWatchFace_fr245m.prg`" -d fr245m -s `"$sdk\bin\shell.exe`"" -PassThru -NoNewWindow
 Start-Sleep -Seconds 3
+if (-not $proc.HasExited) {
+    Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+}
+Get-Process -Name "shell" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
 
 Write-Host "--- Capturing Simulator Screenshot ---"
 python tools\capture_sim.py
