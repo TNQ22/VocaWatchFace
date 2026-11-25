@@ -34,18 +34,19 @@ Màn hình MIP phản xạ của Garmin Forerunner 245 / 245 Music chỉ hỗ tr
 ## 3. Bố cục màn hình tròn 240×240 (`source/EnglishWatchFaceView.mc`)
 Lưu ý các font hệ thống của Garmin có khoảng đệm trên ẩn (`FONT_NUMBER_HOT` lệch +23px, ink cao 46px; `FONT_MEDIUM` +9px; `FONT_XTINY` +6px). Bố cục chuẩn từ trên xuống dưới:
 
-1. **Ngày dương & Âm lịch (`dateY = 19`)**:
+1. **Ngày dương & Âm lịch (`dateY = 17` với `DateFont`)**:
    - Định dạng gọn: `T3-24/11 16/10` (không có dấu cách quanh `-`, không có chữ `AL` trong `LunarCalendar.mc`), căn giữa tổng thể quanh `centerX`.
    - Màu âm lịch: **Đỏ (`COLOR_RED_ALERT`)** vào ngày **mùng 1 (đầu tháng), 14, 15, và ngày cuối tháng âm lịch** (`lunar.day == lunar.daysInMonth`, hỗ trợ cả tháng thiếu 29 ngày và tháng đủ 30 ngày trong `source/LunarCalendar.mc`); ngày bình thường hiển thị màu **Cam (`COLOR_ORANGE_LUNAR`)**.
 2. **Giờ - Phút (`timeY = 20`) & Giây (`secY = 65`)**:
    - `FONT_NUMBER_HOT` căn dấu `:` tại `centerX`, số giây màu vàng (`0xFFFF00`) đặt ngang đáy số phút bên phải. Không để vạch phân cách đè lên số.
 3. **Cụm Từ vựng ở giữa màn hình**:
-   - Thanh tiến độ trên (`topBarY = 96`), từ vựng + từ loại (`wordY = 96`), phiên âm IPA (`phoneticY = 124`), nghĩa tiếng Việt (`meaningY = 146`), thanh tiến độ bước chân dưới (`botBarY = 170`).
+   - Thanh tiến độ trên (`topBarY = 96`), từ vựng + từ loại (`wordY = 96`), phiên âm IPA (`phoneticY = 124`), nghĩa tiếng Việt (`meaningY = 144`), thanh tiến độ bước chân dưới (`botBarY = 172`).
    - Hai thanh phân cách trên & dưới có chiều rộng bằng nhau (`segBarWidth = 206`), vươn sát viền màn hình tròn mà không bị cắt góc.
-   - Nghĩa tiếng Việt dài vượt `204px` tự xuống tối đa 2 dòng qua `splitTextToFit`.
-4. **Hàng Bước chân | Nhịp tim (`rowY = 180`)**:
-   - Trái: `icon_footprints.png` (xanh `0x00FF00`) + số bước; giữa: dấu `|`; phải: `icon_heart.png` (đỏ `0xFF0000`) + nhịp tim.
-5. **Cụm trạng thái & thông báo ở dưới cùng (`botStatusY = 202`)**:
+   - Nghĩa tiếng Việt dài vượt `218px` tự xuống tối đa 2 dòng qua `splitTextToFit`.
+4. **Hàng Bước chân | Nhịp tim (`rowY = 182`, dùng `DateFont`)**:
+   - Căn giữa đều giữa thanh phân chia dưới (`botBarY = 172`) và cụm trạng thái (`botStatusY = 207`).
+   - Trái: `icon_footprints.png` (`18×18`, xanh `0x00FF00`) + số bước; giữa: dấu `|`; phải: `icon_heart.png` (`18×18`, đỏ `0xFF0000`) + nhịp tim.
+5. **Cụm trạng thái & thông báo ở dưới cùng (`botStatusY = 207`)**:
    - **Thứ tự cố định từ trái sang phải**:
      `Pin` → `Kết nối điện thoại` → `Báo thức` → `Không làm phiền` → `Tai nghe` → `Thông báo`.
 
@@ -53,13 +54,14 @@ Lưu ý các font hệ thống của Garmin có khoảng đệm trên ẩn (`FON
 
 ## 4. Quy chuẩn Font & Icon (`tools/generate_bmfont.py`, `resources/`)
 - **Font tùy chỉnh (`resources/fonts/fonts.xml`)**:
-  - `PhoneticFont` (`phonetic.fnt`, Segoe UI 17px): hỗ trợ IPA chuẩn + tiếng Việt.
-  - `MeaningFont` (`meaning.fnt`, Segoe UI 14px): bắt buộc dùng cho nghĩa tiếng Việt (font hệ thống `FONT_XTINY` thiếu dấu tiếng Việt mở rộng nên hiện ký tự lỗi `♦`).
-  - `BadgeFont` (`badge.fnt`, Segoe UI Semibold 13 cắt sát `9px`, lọc viền alpha `< 95`): dùng cho số bên trong Pin và Thông báo để nét thanh mảnh, không lệch dòng do padding ẩn.
+  - `DateFont` (`date.fnt`, cao `14px`, bitmap đối xứng nét đều `2px`): dùng chung cho dòng ngày dương & âm lịch và hàng Bước chân | Nhịp tim (`0-9`, `/`, `T`, `C`, `N`, `-`, `|`), tránh rasterize TrueType gây lệch nét bên to bên nhỏ.
+  - `PhoneticFont` (`phonetic.fnt`, Segoe UI Light 18px, `cutoff=95` đơn sắc): hỗ trợ IPA chuẩn nét mảnh `1px` đồng đều + tiếng Việt.
+  - `MeaningFont` (`meaning.fnt`, Segoe UI Light 16px, `cutoff=95` đơn sắc): bắt buộc dùng cho nghĩa tiếng Việt nét đều không bết (font hệ thống `FONT_XTINY` thiếu dấu tiếng Việt mở rộng nên hiện ký tự lỗi `♦`).
+  - `BadgeFont` (`badge.fnt`, cao `9px`, bitmap nhị phân `0/255` đối xứng nét đều `2px`): dùng cho số bên trong Pin và Thông báo để hai bên số (`0`, `8`...) dày đều tuyệt đối, không bị nét mờ hay bên to bên nhỏ.
 - **Vẽ Pin & Icon Thông báo (`drawSmoothBatteryPill`, `drawCompactWhiteBattery`, `drawNotificationBadge`)**:
   - **Không dùng `dc.fillRoundedRectangle` ở bán kính nhỏ (`<= 3`)** vì Connect IQ vẽ góc vát chéo 45° và tự lược bỏ chóp pin `2px`. Luôn dùng `drawSmoothBatteryPill` (`r = 2` kèm điểm làm mềm đối xứng ở 4 góc) và vẽ chóp pin bằng `fillRectangle` 2 cột cách thân `1px`.
   - Khung pin `26×15`, chữ số `BadgeFont` (`9px`) vẽ tại `y + 2` (cân đều theo thị giác). Pin nền xám sáng `COLOR_LT_GRAY`, phần đã sạc tô trắng (hoặc đỏ khi `<= 20%`). Chóp pin **màu trắng khi đầy `100%`**, và **chuyển về xám khi tụt dưới `100%`**.
   - Icon Thông báo cao `15px`, dạng bong bóng tin nhắn bo góc mềm nền trắng có đuôi nhọn góc dưới trái, ghi số `notificationCount` màu đen trực tiếp bên trong tại `y + 2` (hiển thị khi `notificationCount > 0`).
-- **Bộ icon 16×16 (`resources/drawables/`)**:
-  - Trạng thái trắng: `icon_phone_bt.png` (ống nghe uốn chéo + Bluetooth), `icon_alarm.png` (đồng hồ tròn 2 tai + kim `L`), `icon_moon.png` (trăng lưỡi liềm cân đối từ 2 đường tròn), `icon_headphone.png` (tai nghe bo tròn đối xứng).
-  - Bước chân & Nhịp tim: `icon_footprints.png` (render theo path Bezier Lucide `footprints` màu `(0, 255, 0)`) và `icon_heart.png` (trái tim đối xứng màu `(255, 0, 0)`).
+- **Bộ icon (`resources/drawables/`)**:
+  - Trạng thái trắng (`16×16`): `icon_phone_bt.png` (ống nghe uốn chéo + Bluetooth), `icon_alarm.png` (đồng hồ tròn 2 tai + kim `L`), `icon_moon.png` (trăng lưỡi liềm cân đối từ 2 đường tròn), `icon_headphone.png` (tai nghe bo tròn đối xứng).
+  - Bước chân & Nhịp tim (`18×18`): `icon_footprints.png` (render theo path Bezier Lucide `footprints` màu `(0, 255, 0)`) và `icon_heart.png` (trái tim đối xứng màu `(255, 0, 0)`).

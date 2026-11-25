@@ -142,42 +142,147 @@ def generate_bmfont(name: str, font_path: str, font_size: int, tex_w: int = 256,
 
 
 def generate_badge_digit_font():
-    """Generates a tight 9px-tall semibold digit font for battery/notification pills with slim strokes and zero vertical drift."""
+    """Generates a tight 9px-tall pixel-symmetric bold digit font (uniform 2px strokes, pure binary 0/255)."""
     os.makedirs('resources/fonts', exist_ok=True)
-    font = ImageFont.truetype('C:/Windows/Fonts/seguisb.ttf', 13)
-    chars = list('0123456789+')
+    glyphs = {
+        '0': [
+            '.####.',
+            '######',
+            '##..##',
+            '##..##',
+            '##..##',
+            '##..##',
+            '##..##',
+            '######',
+            '.####.',
+        ],
+        '1': [
+            '..##',
+            '.###',
+            '####',
+            '..##',
+            '..##',
+            '..##',
+            '..##',
+            '..##',
+            '..##',
+        ],
+        '2': [
+            '.####.',
+            '######',
+            '....##',
+            '...###',
+            '..###.',
+            '.###..',
+            '##....',
+            '######',
+            '######',
+        ],
+        '3': [
+            '.####.',
+            '######',
+            '....##',
+            '..###.',
+            '..###.',
+            '....##',
+            '....##',
+            '######',
+            '.####.',
+        ],
+        '4': [
+            '...###',
+            '..####',
+            '.##.##',
+            '##..##',
+            '##..##',
+            '######',
+            '######',
+            '....##',
+            '....##',
+        ],
+        '5': [
+            '######',
+            '######',
+            '##....',
+            '#####.',
+            '.#####',
+            '....##',
+            '....##',
+            '######',
+            '.####.',
+        ],
+        '6': [
+            '.####.',
+            '#####.',
+            '##....',
+            '#####.',
+            '######',
+            '##..##',
+            '##..##',
+            '######',
+            '.####.',
+        ],
+        '7': [
+            '######',
+            '######',
+            '....##',
+            '...##.',
+            '...##.',
+            '..##..',
+            '..##..',
+            '..##..',
+            '..##..',
+        ],
+        '8': [
+            '.####.',
+            '######',
+            '##..##',
+            '.####.',
+            '.####.',
+            '##..##',
+            '##..##',
+            '######',
+            '.####.',
+        ],
+        '9': [
+            '.####.',
+            '######',
+            '##..##',
+            '##..##',
+            '######',
+            '.#####',
+            '....##',
+            '.#####',
+            '.####.',
+        ],
+        '+': [
+            '...#...',
+            '...#...',
+            '...#...',
+            '#######',
+            '...#...',
+            '...#...',
+            '...#...',
+        ],
+    }
+
     tex_w, tex_h = 128, 32
     img = Image.new('RGBA', (tex_w, tex_h), (0, 0, 0, 0))
+    px = img.load()
 
     cur_x = 1
     cur_y = 2
     entries = []
     target_h = 9
 
-    for c in chars:
-        tmp = Image.new('RGBA', (24, 24), (0, 0, 0, 0))
-        d = ImageDraw.Draw(tmp)
-        d.text((4, 4), c, font=font, fill=(255, 255, 255, 255))
-        # Trim faint AA halo (< 95 alpha) so strokes don't bloat on Garmin 64-color MIP
-        tpx = tmp.load()
-        for yy in range(24):
-            for xx in range(24):
-                r, g, b, a = tpx[xx, yy]
-                if a < 95:
-                    tpx[xx, yy] = (0, 0, 0, 0)
-                elif a < 180:
-                    tpx[xx, yy] = (255, 255, 255, 170)
-                else:
-                    tpx[xx, yy] = (255, 255, 255, 255)
-
-        rows = [y for y in range(24) if any(tpx[x, y][3] > 0 for x in range(24))]
-        cols = [x for x in range(24) if any(tpx[x, y][3] > 0 for y in range(24))]
-        r0, r1 = min(rows), max(rows)
-        c0, c1 = min(cols), max(cols)
-        glyph = tmp.crop((c0, r0, c1 + 1, r1 + 1))
-        gw, gh = glyph.size
+    for c, rows in glyphs.items():
+        gw = len(rows[0])
+        gh = len(rows)
+        for yy, row in enumerate(rows):
+            for xx, ch in enumerate(row):
+                if ch == '#':
+                    px[cur_x + xx, cur_y + yy] = (255, 255, 255, 255)
         yoff = max(0, (target_h - gh) // 2)
-        img.paste(glyph, (cur_x, cur_y))
         adv = gw + 1
         entries.append((ord(c), cur_x, cur_y, gw, gh, 0, yoff, adv))
         cur_x += gw + 2
@@ -195,7 +300,279 @@ def generate_badge_digit_font():
     print(f'Generated exact {target_h}px slim badge font in {fnt_path} and {png_path}')
 
 
+def generate_date_font():
+    """Generates a tight 14px-tall pixel-symmetric semibold font (uniform 2px strokes) for Date and Steps | HR rows."""
+    os.makedirs('resources/fonts', exist_ok=True)
+    glyphs = {
+        '0': (0, 0, 9, [
+            '.+####+.',
+            '.######.',
+            '##+..+##',
+            '##....##',
+            '##....##',
+            '##....##',
+            '##....##',
+            '##....##',
+            '##....##',
+            '##....##',
+            '##+..+##',
+            '.######.',
+            '.+####+.',
+        ]),
+        '1': (0, 0, 6, [
+            '...##',
+            '..###',
+            '.####',
+            '##.##',
+            '...##',
+            '...##',
+            '...##',
+            '...##',
+            '...##',
+            '...##',
+            '...##',
+            '...##',
+            '...##',
+        ]),
+        '2': (0, 0, 9, [
+            '.+####+.',
+            '########',
+            '##....##',
+            '......##',
+            '......##',
+            '.....+##',
+            '....###.',
+            '...###..',
+            '..###...',
+            '.##+....',
+            '##......',
+            '########',
+            '########',
+        ]),
+        '3': (0, 0, 9, [
+            '.+####+.',
+            '########',
+            '##....##',
+            '......##',
+            '.....+##',
+            '..+####.',
+            '..+####.',
+            '.....+##',
+            '......##',
+            '......##',
+            '##....##',
+            '########',
+            '.+####+.',
+        ]),
+        '4': (0, 0, 10, [
+            '.....###.',
+            '....####.',
+            '...#####.',
+            '...##.##.',
+            '..##..##.',
+            '.##+..##.',
+            '.##...##.',
+            '##....##.',
+            '#########',
+            '#########',
+            '......##.',
+            '......##.',
+            '......##.',
+        ]),
+        '5': (0, 0, 9, [
+            '.#######',
+            '.#######',
+            '.##.....',
+            '.##.....',
+            '.######.',
+            '.#######',
+            '......##',
+            '......##',
+            '......##',
+            '......##',
+            '##....##',
+            '#######.',
+            '.+####+.',
+        ]),
+        '6': (0, 0, 9, [
+            '..+####.',
+            '.######.',
+            '##......',
+            '##......',
+            '##+###..',
+            '#######.',
+            '###..###',
+            '##....##',
+            '##....##',
+            '##....##',
+            '###..###',
+            '.######.',
+            '.+####+.',
+        ]),
+        '7': (0, 0, 9, [
+            '########',
+            '########',
+            '......##',
+            '.....+##',
+            '.....##.',
+            '....##+.',
+            '....##..',
+            '...##+..',
+            '...##...',
+            '..##+...',
+            '..##....',
+            '..##....',
+            '..##....',
+        ]),
+        '8': (0, 0, 9, [
+            '.+####+.',
+            '.######.',
+            '##....##',
+            '##....##',
+            '##+..+##',
+            '.######.',
+            '.######.',
+            '##+..+##',
+            '##....##',
+            '##....##',
+            '##....##',
+            '.######.',
+            '.+####+.',
+        ]),
+        '9': (0, 0, 9, [
+            '.+####+.',
+            '.######.',
+            '###..###',
+            '##....##',
+            '##....##',
+            '##....##',
+            '###..###',
+            '.#######',
+            '..###+##',
+            '......##',
+            '......##',
+            '.######.',
+            '.+####+.',
+        ]),
+        '/': (0, 0, 8, [
+            '.....##',
+            '....+##',
+            '....##.',
+            '....##.',
+            '...+##.',
+            '...##..',
+            '...##..',
+            '..+##..',
+            '..##...',
+            '..##...',
+            '.+##...',
+            '.##....',
+            '.##....',
+            '+##....',
+            '##.....',
+        ]),
+        'T': (0, 0, 9, [
+            '########',
+            '########',
+            '...##...',
+            '...##...',
+            '...##...',
+            '...##...',
+            '...##...',
+            '...##...',
+            '...##...',
+            '...##...',
+            '...##...',
+            '...##...',
+            '...##...',
+        ]),
+        'C': (0, 0, 9, [
+            '..+####.',
+            '.#######',
+            '###...##',
+            '##......',
+            '##......',
+            '##......',
+            '##......',
+            '##......',
+            '##......',
+            '##......',
+            '###...##',
+            '.#######',
+            '..+####.',
+        ]),
+        'N': (0, 0, 10, [
+            '##.....##',
+            '###....##',
+            '####...##',
+            '####+..##',
+            '##.##..##',
+            '##+##+.##',
+            '##.+##.##',
+            '##..##+##',
+            '##..+####',
+            '##...####',
+            '##....###',
+            '##.....##',
+            '##.....##',
+        ]),
+        '-': (1, 6, 7, [
+            '#####',
+            '#####',
+        ]),
+        '|': (0, 0, 3, [
+            '##',
+            '##',
+            '##',
+            '##',
+            '##',
+            '##',
+            '##',
+            '##',
+            '##',
+            '##',
+            '##',
+            '##',
+            '##',
+        ]),
+    }
+
+    tex_w, tex_h = 256, 32
+    img = Image.new('RGBA', (tex_w, tex_h), (0, 0, 0, 0))
+    px = img.load()
+
+    cur_x = 1
+    cur_y = 2
+    entries = [(32, 0, 0, 0, 0, 0, 0, 5)]
+    target_h = 14
+
+    for c, (xoff, yoff, adv, rows) in glyphs.items():
+        gw = len(rows[0])
+        gh = len(rows)
+        for yy, row in enumerate(rows):
+            for xx, ch in enumerate(row):
+                if ch == '#':
+                    px[cur_x + xx, cur_y + yy] = (255, 255, 255, 255)
+                elif ch == '+':
+                    px[cur_x + xx, cur_y + yy] = (255, 255, 255, 170)
+        entries.append((ord(c), cur_x, cur_y, gw, gh, xoff, yoff, adv))
+        cur_x += gw + 2
+
+    png_path = 'resources/fonts/date_0.png'
+    fnt_path = 'resources/fonts/date.fnt'
+    img.save(png_path, 'PNG')
+    with open(fnt_path, 'w', encoding='utf-8') as f:
+        f.write(f'info face="Segoe UI Semibold" size=19 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1\n')
+        f.write(f'common lineHeight={target_h} base={target_h} scaleW={tex_w} scaleH={tex_h} pages=1 packed=0\n')
+        f.write('page id=0 file="date_0.png"\n')
+        f.write(f'chars count={len(entries)}\n')
+        for cid, x, y, w, h, xoff, yoff, adv in entries:
+            f.write(f'char id={cid:<5} x={x:<4} y={y:<4} width={w:<3} height={h:<3} xoffset={xoff:<3} yoffset={yoff:<3} xadvance={adv:<3} page=0 chnl=15\n')
+    print(f'Generated exact {target_h}px date font in {fnt_path} and {png_path}')
+
+
 if __name__ == '__main__':
-    generate_bmfont('phonetic', 'C:/Windows/Fonts/segoeuisl.ttf', 16, 256, 384, cutoff_override=125, two_step=False)
-    generate_bmfont('meaning', 'C:/Windows/Fonts/segoeuisl.ttf', 14, 256, 300, cutoff_override=95, two_step=True)
+    generate_bmfont('phonetic', 'C:/Windows/Fonts/segoeuil.ttf', 18, 256, 384, cutoff_override=95, two_step=False)
+    generate_bmfont('meaning', 'C:/Windows/Fonts/segoeuil.ttf', 16, 256, 340, cutoff_override=95, two_step=False)
     generate_badge_digit_font()
+    generate_date_font()

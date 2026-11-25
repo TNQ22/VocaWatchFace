@@ -2,4 +2,5 @@
     <font id="PhoneticFont" filename="phonetic.fnt" antialias="true" />
     <font id="MeaningFont" filename="meaning.fnt" antialias="true" />
     <font id="BadgeFont" filename="badge.fnt" antialias="true" />
+    <font id="DateFont" filename="date.fnt" antialias="true" />
 </fonts>

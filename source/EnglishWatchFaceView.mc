@@ -23,6 +23,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
     private var phoneticFont as WatchUi.FontResource?;
     private var meaningFont as WatchUi.FontResource?;
     private var badgeFont as WatchUi.FontResource?;
+    private var dateFontRes as WatchUi.FontResource?;
 
     // Bảng màu chuẩn 64 màu phần cứng MIP Display của Garmin (tránh pha RGB khiến màu bị nhạt/lệch khi ra thực tế)
     const COLOR_GREEN_MAIN   = Graphics.COLOR_GREEN;   // 0x00FF00 - Xanh lục thuần (bỏ kênh xanh dương để không bị ngả cyan/teal)
@@ -49,6 +50,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         phoneticFont = WatchUi.loadResource(Rez.Fonts.PhoneticFont) as WatchUi.FontResource;
         meaningFont = WatchUi.loadResource(Rez.Fonts.MeaningFont) as WatchUi.FontResource;
         badgeFont = WatchUi.loadResource(Rez.Fonts.BadgeFont) as WatchUi.FontResource;
+        dateFontRes = WatchUi.loadResource(Rez.Fonts.DateFont) as WatchUi.FontResource;
     }
 
     function onShow() as Void {
@@ -119,8 +121,8 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var solarStr = Lang.format("$1$-$2$/$3$", [dayOfWeekStr, dateInfo.day.format("%02d"), dateInfo.month.format("%02d")]);
         var lunarStr = lunar.toString();
 
-        var dateY = 19;
-        var dateFont = Graphics.FONT_XTINY;
+        var dateY = (dateFontRes != null) ? 17 : 15;
+        var dateFont = (dateFontRes != null) ? dateFontRes : Graphics.FONT_XTINY;
         var solarDim = dc.getTextDimensions(solarStr, dateFont);
         var lunarDim = dc.getTextDimensions(lunarStr, dateFont);
         var dateGap = 8;
@@ -175,28 +177,27 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         drawSegmentedBar(dc, centerX, topBarY, segBarWidth, barHeight, totalWords, currentVocabIdx, COLOR_GREEN_MAIN, true);
 
         // B. NỘI DUNG TỪ VỰNG
-        // Dòng 1: TỪ VỰNG (Xanh lá) + Từ loại (Xanh dương)
+        // Dòng 1: TỪ VỰNG căn chính giữa (Xanh lá) + Từ loại tách riêng đặt bên phải ngang đáy (Xanh dương)
         var wordFont = Graphics.FONT_MEDIUM;
         var wordDim = dc.getTextDimensions(word.word, wordFont);
         var posFont = Graphics.FONT_XTINY;
         var posDim = dc.getTextDimensions(word.pos, posFont);
-        var wordPosGap = 6;
-        var totalWordW = wordDim[0] + wordPosGap + posDim[0];
+        var wordPosGap = 4;
 
-        if (totalWordW > 175) {
+        if ((wordDim[0] / 2) + wordPosGap + posDim[0] > 106) {
             wordFont = Graphics.FONT_SMALL;
             wordDim = dc.getTextDimensions(word.word, wordFont);
-            totalWordW = wordDim[0] + wordPosGap + posDim[0];
         }
 
-        var startWordX = centerX - (totalWordW / 2);
         var wordY = 96;
         dc.setColor(COLOR_GREEN_MAIN, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(startWordX, wordY, wordFont, word.word, Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(centerX, wordY, wordFont, word.word, Graphics.TEXT_JUSTIFY_CENTER);
 
         dc.setColor(COLOR_BLUE_POS, Graphics.COLOR_TRANSPARENT);
-        var posOffsetY = (wordDim[1] - posDim[1]) / 2;
-        dc.drawText(startWordX + wordDim[0] + wordPosGap, wordY + posOffsetY, posFont, word.pos, Graphics.TEXT_JUSTIFY_LEFT);
+        var posX = centerX + (wordDim[0] / 2) + wordPosGap;
+        // Bù -3px để đáy chân chữ thường (n., v., adj.) nằm ngang hàng tuyệt đối với chân chữ in hoa của từ vựng
+        var posY = wordY + wordDim[1] - posDim[1] - 3;
+        dc.drawText(posX, posY, posFont, word.pos, Graphics.TEXT_JUSTIFY_LEFT);
 
         // Dòng 2: PHIÊN ÂM IPA (Vàng kim) - font phoneticFont hỗ trợ IPA chuẩn
         var phoneticY = 124;
@@ -205,10 +206,10 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         dc.drawText(centerX, phoneticY, pFont, word.phonetic, Graphics.TEXT_JUSTIFY_CENTER);
 
         // Dòng 3: NGHĨA TIẾNG VIỆT (Trắng) - dùng MeaningFont hỗ trợ đầy đủ dấu tiếng Việt
-        var meaningY = 146;
+        var meaningY = 144;
         var mFont = (meaningFont != null) ? meaningFont : ((phoneticFont != null) ? phoneticFont : Graphics.FONT_XTINY);
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        var meaningLines = splitTextToFit(dc, word.meaning, mFont, 204);
+        var meaningLines = splitTextToFit(dc, word.meaning, mFont, 218);
         dc.drawText(centerX, meaningY, mFont, meaningLines[0], Graphics.TEXT_JUSTIFY_CENTER);
         var extraMeaningH = 0;
         if (meaningLines.size() > 1) {
@@ -217,7 +218,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         }
 
         // C. THANH DƯỚI: TRÙNG SỐ VẠCH TIẾN ĐỘ BƯỚC CHÂN
-        var botBarY = 170 + extraMeaningH;
+        var botBarY = 172 + extraMeaningH;
         var steps = (actInfo != null && actInfo.steps != null) ? actInfo.steps : 0;
         var stepGoal = (actInfo != null && actInfo.stepGoal != null && actInfo.stepGoal > 0) ? actInfo.stepGoal : 10000;
         var activeStepSegs = ((steps * totalWords * 1.0) / stepGoal).toNumber();
@@ -226,20 +227,18 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         }
         drawSegmentedBar(dc, centerX, botBarY, segBarWidth, barHeight, totalWords, activeStepSegs, COLOR_GREEN_MAIN, false);
 
-        // 6. BƯỚC CHÂN THỰC TẾ BÊN TRÁI | NHỊP TIM BÊN PHẢI
-        var rowY = 180 + extraMeaningH;
+        // 6. BƯỚC CHÂN THỰC TẾ BÊN TRÁI | NHỊP TIM BÊN PHẢI (căn đều giữa botBarY=172 và botStatusY=207)
+        var rowY = 182 + extraMeaningH;
         var stepStr = steps.toString();
         var hrStr = getHeartRate();
 
-        var botFont = Graphics.FONT_XTINY;
+        var botFont = (dateFontRes != null) ? dateFontRes : Graphics.FONT_TINY;
         var stepDim = dc.getTextDimensions(stepStr, botFont);
         var sepDim = dc.getTextDimensions("|", botFont);
         var hrDim = dc.getTextDimensions(hrStr, botFont);
 
-        var footW = 16;
-        var footH = 16;
-        var heartW = 16;
-        var heartH = 16;
+        var footW = 18;
+        var heartW = 18;
         var gap = 4;
         var sepMargin = 8;
 
@@ -249,28 +248,28 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var totalRowW = leftBlockW + sepMargin + sepW + sepMargin + rightBlockW;
         var rowStartX = centerX - (totalRowW / 2);
 
+        // DateFont ink cao ~13px -> đặt tại rowY + 2 để cân giữa icon 18x18 (ink y=rowY+1..rowY+16)
+        var botTextY = (dateFontRes != null) ? (rowY + 2) : (rowY - 6);
+
         // A. Bên trái: Icon bước chân + số bước thực tế
         if (iconFootprints != null) {
             dc.drawBitmap(rowStartX, rowY, iconFootprints);
         }
-        var stepTextY = rowY + (footH - stepDim[1]) / 2;
         dc.setColor(COLOR_GREEN_MAIN, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(rowStartX + footW + gap, stepTextY, botFont, stepStr, Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(rowStartX + footW + gap, botTextY, botFont, stepStr, Graphics.TEXT_JUSTIFY_LEFT);
 
         // B. Ở giữa: Dấu phân cách |
         var sepX = rowStartX + leftBlockW + sepMargin + (sepW / 2);
-        var sepTextY = rowY + (footH - sepDim[1]) / 2;
         dc.setColor(COLOR_SEG_BG, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(sepX, sepTextY, botFont, "|", Graphics.TEXT_JUSTIFY_CENTER);
+        dc.drawText(sepX, botTextY, botFont, "|", Graphics.TEXT_JUSTIFY_CENTER);
 
         // C. Bên phải: Icon nhịp tim + nhịp tim
         var rightStartX = rowStartX + leftBlockW + sepMargin + sepW + sepMargin;
         if (iconHeart != null) {
             dc.drawBitmap(rightStartX, rowY, iconHeart);
         }
-        var hrTextY = rowY + (heartH - hrDim[1]) / 2;
         dc.setColor(COLOR_RED_ALERT, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(rightStartX + heartW + gap, hrTextY, botFont, hrStr, Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(rightStartX + heartW + gap, botTextY, botFont, hrStr, Graphics.TEXT_JUSTIFY_LEFT);
 
         // 7. CỤM TRẠNG THÁI & THÔNG BÁO Ở DƯỚI CÙNG
         //    Thứ tự: Pin -> Kết nối điện thoại -> Báo thức -> Không làm phiền -> Tai nghe -> Thông báo
@@ -297,7 +296,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         if (showNotif) { totalBarW += iconSpacing + notifW; }
 
         var curX = centerX - (totalBarW / 2);
-        var botStatusY = 202 + (extraMeaningH > 0 ? 5 : 0);
+        var botStatusY = 207 + (extraMeaningH > 0 ? 3 : 0);
 
         // 1. Pin
         drawCompactWhiteBattery(dc, curX, botStatusY, battery);
