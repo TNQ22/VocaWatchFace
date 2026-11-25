@@ -116,7 +116,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var showHeadphone = true;
 
         var iconSpacing = 3;
-        var batW = 28; // 25px thân bo tròn + 1px khe + 2px chóp
+        var batW = 29; // 26px thân bo tròn + 1px khe + 2px chóp
         var iconW = 16; // Icon Garmin 16x16 sắc nét
         var notifStr = showNotif ? (notifCount > 99 ? "99" : notifCount.toString()) : "";
         var notifW = showNotif ? (notifStr.length() >= 2 ? 20 : 16) : 0;
@@ -385,12 +385,12 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         }
     }
 
-    // Icon Pin bo tròn kiểu iOS (nền xám phần trống, trắng phần pin còn lại, đỏ khi <=20%, chữ số đen ở giữa)
+    // Icon Pin bo tròn kiểu iOS (nền xám phần trống, trắng phần pin còn lại, đỏ khi <=20%, chữ số đen căn giữa)
     private function drawCompactWhiteBattery(dc as Graphics.Dc, x as Number, y as Number, pct as Number) as Void {
         if (pct < 0) { pct = 0; }
         if (pct > 100) { pct = 100; }
 
-        var w = 25;
+        var w = 26;
         var h = 14;
         var radius = 4;
         var isLow = (pct <= 20);
@@ -409,27 +409,30 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
             dc.clearClip();
         }
 
-        // 3. Chóp pin cực dương bên phải cách 1px giống mẫu
-        dc.setColor(pct >= 98 ? fillColor : Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        dc.fillRoundedRectangle(x + w + 1, y + 4, 2, 6, 1);
+        // 3. Chóp pin cực dương bên phải cách 1px (vẽ 2 cột tạo đầu bo tròn không bị CIQ lược bỏ):
+        //    Đầy 100% -> chóp trắng; tụt dưới 100% -> chóp xám (hoặc đỏ nếu muốn? không, tụt dưới 100% phần phải màu xám nên chóp xám)
+        var tipColor = (pct >= 100) ? fillColor : Graphics.COLOR_LT_GRAY;
+        dc.setColor(tipColor, Graphics.COLOR_TRANSPARENT);
+        dc.fillRectangle(x + w + 1, y + 4, 1, 6);
+        dc.fillRectangle(x + w + 2, y + 5, 1, 4);
 
-        // 4. Chữ số pin màu đen ở chính giữa
+        // 4. Chữ số pin màu đen: trừ 1px theo trục Y để bù padding trên của FONT_XTINY, cân chính giữa thân pin
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
         var batStr = Lang.format("$1$", [pct]);
-        dc.drawText(x + (w / 2), y + (h / 2), Graphics.FONT_XTINY, batStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(x + (w / 2), y + (h / 2) - 1, Graphics.FONT_XTINY, batStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
     // Icon Thông báo nền trắng bo tròn dạng bong bóng tin nhắn, ghi số thông báo trực tiếp bên trong
     private function drawNotificationBadge(dc as Graphics.Dc, x as Number, y as Number, notifStr as String, w as Number) as Void {
-        var h = 13;
+        var h = 14;
         dc.setColor(COLOR_WHITE_ICON, Graphics.COLOR_TRANSPARENT);
         dc.fillRoundedRectangle(x, y, w, h, 4);
         // Đuôi nhọn bong bóng tin nhắn ở góc dưới bên trái
         dc.fillPolygon([[x + 3, y + h - 1], [x + 7, y + h - 1], [x + 2, y + h + 2]]);
 
-        // Số thông báo màu đen căn giữa hoàn toàn bên trong icon
+        // Số thông báo màu đen: trừ 1px để cân chính giữa phần thân bong bóng (h=14)
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(x + (w / 2), y + (h / 2), Graphics.FONT_XTINY, notifStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(x + (w / 2), y + (h / 2) - 1, Graphics.FONT_XTINY, notifStr, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
     function onHide() as Void {
