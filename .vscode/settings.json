@@ -1,0 +1,6 @@
+{
+  "monkeyC.javaPath": "C:\\Users\\TNQ\\.t3\\projects\\garmin\\.dev_tools\\jdk-17\\bin\\java.exe",
+  "monkeyC.developerKeyPath": "C:\\Users\\TNQ\\.t3\\projects\\garmin\\ci\\developer_key.der",
+  "monkeyC.jungleFiles": "monkey.jungle",
+  "monkeyC.typeCheckLevel": "0"
+}
