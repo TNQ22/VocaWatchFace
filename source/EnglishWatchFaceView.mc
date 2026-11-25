@@ -24,13 +24,14 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
     private var meaningFont as WatchUi.FontResource?;
     private var badgeFont as WatchUi.FontResource?;
 
-    // Bảng màu chuẩn Garmin (chuẩn palette 64 màu của MIP display)
-    const COLOR_GREEN_MAIN = 0x00E676;  // Xanh lá thể thao chủ đạo
-    const COLOR_RED_ALERT  = 0xFF5252;  // Đỏ cảnh báo / Âm lịch đặc biệt / Nhịp tim
-    const COLOR_ORANGE_LUNAR = 0xFF9900; // Cam cho ngày âm lịch bình thường
-    const COLOR_SEG_BG     = 0x555555;  // Xám đậm hiển thị rõ ràng trên nền đen MIP
-    const COLOR_YELLOW_SEC = 0xFFD54F;  // Vàng kim giây & phiên âm IPA
-    const COLOR_WHITE_ICON = 0xFFFFFF;  // Trắng cho toàn bộ icon trạng thái
+    // Bảng màu chuẩn 64 màu phần cứng MIP Display của Garmin (tránh pha RGB khiến màu bị nhạt/lệch khi ra thực tế)
+    const COLOR_GREEN_MAIN   = Graphics.COLOR_GREEN;   // 0x00FF00 - Xanh lục thuần (bỏ kênh xanh dương để không bị ngả cyan/teal)
+    const COLOR_RED_ALERT    = Graphics.COLOR_RED;     // 0xFF0000 - Đỏ thuần (bỏ xanh lục/dương để không bị ngả cam)
+    const COLOR_ORANGE_LUNAR = Graphics.COLOR_ORANGE;  // 0xFF5500 - Cam đậm chuẩn Garmin MIP
+    const COLOR_SEG_BG       = Graphics.COLOR_DK_GRAY; // 0x555555 - Xám đậm hiển thị rõ ràng trên nền đen MIP
+    const COLOR_YELLOW_SEC   = 0xFFFF00;               // 0xFFFF00 - Vàng thuần 64-màu MIP (G=FF, B=0; tránh COLOR_YELLOW 0xFFAA00 hơi cam và tránh 0xFFFF55 bị nhạt trắng)
+    const COLOR_BLUE_POS     = Graphics.COLOR_BLUE;    // 0x00AAFF - Xanh dương thuần chuẩn Garmin (bỏ kênh đỏ để không ngả trắng)
+    const COLOR_WHITE_ICON   = Graphics.COLOR_WHITE;   // 0xFFFFFF - Trắng cho toàn bộ icon trạng thái
 
     function initialize() {
         WatchFace.initialize();
@@ -193,7 +194,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         dc.setColor(COLOR_GREEN_MAIN, Graphics.COLOR_TRANSPARENT);
         dc.drawText(startWordX, wordY, wordFont, word.word, Graphics.TEXT_JUSTIFY_LEFT);
 
-        dc.setColor(0x40C4FF, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(COLOR_BLUE_POS, Graphics.COLOR_TRANSPARENT);
         var posOffsetY = (wordDim[1] - posDim[1]) / 2;
         dc.drawText(startWordX + wordDim[0] + wordPosGap, wordY + posOffsetY, posFont, word.pos, Graphics.TEXT_JUSTIFY_LEFT);
 
