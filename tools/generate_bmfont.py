@@ -2,7 +2,7 @@ import os
 from PIL import Image, ImageFont, ImageDraw
 
 
-def generate_bmfont(name: str, font_path: str, font_size: int, tex_w: int = 256, tex_h: int = 384):
+def generate_bmfont(name: str, font_path: str, font_size: int, tex_w: int = 256, tex_h: int = 384, cutoff_override: int = 95, two_step: bool = True):
     os.makedirs('resources/fonts', exist_ok=True)
 
     font = ImageFont.truetype(font_path, font_size)
@@ -90,8 +90,31 @@ def generate_bmfont(name: str, font_path: str, font_size: int, tex_w: int = 256,
             cur_y += max_row_h + padding
             max_row_h = 0
 
-        # Draw glyph in white
-        draw.text((cur_x - bbox[0], cur_y - bbox[1]), c, font=font, fill=(255, 255, 255, 255), anchor='ls')
+        # Draw glyph in white onto temporary small canvas, clean faint halo so MIP doesn't bloat strokes
+        gw_pad = w + 4
+        gh_pad = h + 4
+        gtmp = Image.new('RGBA', (gw_pad, gh_pad), (0, 0, 0, 0))
+        gd = ImageDraw.Draw(gtmp)
+        gd.text((2 - bbox[0], 2 - bbox[1]), c, font=font, fill=(255, 255, 255, 255), anchor='ls')
+
+        gpx = gtmp.load()
+        max_a = max(gpx[xx, yy][3] for yy in range(gh_pad) for xx in range(gw_pad))
+        # Preserve small punctuation/dots (like '.', ',') while trimming bloated AA halos
+        cutoff = cutoff_override if max_a >= 165 else max(45, max_a // 2)
+        for yy in range(gh_pad):
+            for xx in range(gw_pad):
+                a = gpx[xx, yy][3]
+                if a < cutoff:
+                    gpx[xx, yy] = (0, 0, 0, 0)
+                else:
+                    # Boost dim dot peaks slightly so tiny glyphs don't vanish on MIP
+                    na = min(255, int(round(a * 255.0 / max_a))) if max_a < 180 else a
+                    if two_step and na < 185:
+                        gpx[xx, yy] = (255, 255, 255, 170)
+                    else:
+                        gpx[xx, yy] = (255, 255, 255, 255)
+
+        img.paste(gtmp.crop((2, 2, 2 + w, 2 + h)), (cur_x, cur_y))
 
         xoffset = bbox[0]
         yoffset = base + bbox[1]
@@ -173,6 +196,6 @@ def generate_badge_digit_font():
 
 
 if __name__ == '__main__':
-    generate_bmfont('phonetic', 'C:/Windows/Fonts/segoeui.ttf', 17, 256, 384)
-    generate_bmfont('meaning', 'C:/Windows/Fonts/segoeui.ttf', 14, 256, 300)
+    generate_bmfont('phonetic', 'C:/Windows/Fonts/segoeuisl.ttf', 16, 256, 384, cutoff_override=125, two_step=False)
+    generate_bmfont('meaning', 'C:/Windows/Fonts/segoeuisl.ttf', 14, 256, 300, cutoff_override=95, two_step=True)
     generate_badge_digit_font()

@@ -415,8 +415,8 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var fillColor = isLow ? COLOR_RED_ALERT : COLOR_WHITE_ICON;
         var fillAaInner = isLow ? COLOR_RED_ALERT : Graphics.COLOR_LT_GRAY;
 
-        // 1. Thân pin nền xám sáng bo góc nhỏ mềm mại
-        drawSmoothBatteryPill(dc, x, y, w, h, Graphics.COLOR_LT_GRAY, Graphics.COLOR_DK_GRAY);
+        // 1. Thân pin nền xám đậm hơn (DK_GRAY) để phân biệt rõ với phần trắng đã sạc
+        drawSmoothBatteryPill(dc, x, y, w, h, Graphics.COLOR_DK_GRAY, Graphics.COLOR_BLACK);
 
         // 2. Phần pin đã sạc bên trái (cắt clip gọn theo đúng dáng bo tròn mềm)
         var fillW = ((w * pct) + 50) / 100;
@@ -426,8 +426,8 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
             dc.clearClip();
         }
 
-        // 3. Chóp pin cực dương bên phải cách 1px (đầy 100% -> trắng, tụt <100% -> xám)
-        var tipColor = (pct >= 100) ? fillColor : Graphics.COLOR_LT_GRAY;
+        // 3. Chóp pin cực dương bên phải cách 1px (đầy 100% -> trắng, tụt <100% -> xám đậm đồng bộ thân pin)
+        var tipColor = (pct >= 100) ? fillColor : Graphics.COLOR_DK_GRAY;
         dc.setColor(tipColor, Graphics.COLOR_TRANSPARENT);
         dc.fillRectangle(x + w + 1, y + 4, 1, 7);
         dc.fillRectangle(x + w + 2, y + 5, 1, 5);
