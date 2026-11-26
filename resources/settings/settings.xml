@@ -37,12 +37,12 @@
             </settingConfig>
         </setting>
 
-        <setting propertyKey="@Properties.ApiUrl" title="@Strings.SettingApiUrlTitle" prompt="@Strings.SettingApiUrlPrompt">
-            <settingConfig type="alphaNumeric" maxLength="256" />
-        </setting>
-
         <setting propertyKey="@Properties.CustomVocabJson" title="@Strings.SettingCustomJsonTitle" prompt="@Strings.SettingCustomJsonPrompt">
             <settingConfig type="alphaNumeric" maxLength="1024" />
+        </setting>
+
+        <setting propertyKey="@Properties.ApiUrl" title="@Strings.SettingApiUrlTitle" prompt="@Strings.SettingApiUrlPrompt">
+            <settingConfig type="alphaNumeric" maxLength="256" />
         </setting>
     </settings>
 </resources>

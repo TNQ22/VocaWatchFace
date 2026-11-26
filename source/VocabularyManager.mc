@@ -76,11 +76,16 @@ class VocabularyManager {
         }
 
         if (activeTopic == TOPIC_CUSTOM) {
-            var loadedCustom = loadCustomWordsFromStorage();
-            if (loadedCustom != null && loadedCustom.size() > 0) {
-                words = loadedCustom;
+            var directWords = loadDirectCustomWords();
+            if (directWords != null && directWords.size() > 0) {
+                words = directWords;
             } else {
-                words = getWordsForTopic(TOPIC_GENERAL);
+                var loadedCustom = loadCustomWordsFromStorage();
+                if (loadedCustom != null && loadedCustom.size() > 0) {
+                    words = loadedCustom;
+                } else {
+                    words = getWordsForTopic(TOPIC_GENERAL);
+                }
             }
         } else {
             words = getWordsForTopic(activeTopic);
@@ -113,6 +118,154 @@ class VocabularyManager {
             }
             if (result.size() > 0) {
                 return result;
+            }
+        }
+        return null;
+    }
+
+    private function trimStr(str as String) as String {
+        var len = str.length();
+        if (len == 0) {
+            return str;
+        }
+        var start = 0;
+        while (start < len) {
+            var ch = str.substring(start, start + 1);
+            if (!ch.equals(" ") && !ch.equals("\t") && !ch.equals("\r") && !ch.equals("\n")) {
+                break;
+            }
+            start++;
+        }
+        var end = len;
+        while (end > start) {
+            var ch = str.substring(end - 1, end);
+            if (!ch.equals(" ") && !ch.equals("\t") && !ch.equals("\r") && !ch.equals("\n")) {
+                break;
+            }
+            end--;
+        }
+        return (start < end) ? str.substring(start, end) : "";
+    }
+
+    private function findSub(str as String, target as String, startFrom as Number) as Number? {
+        if (startFrom >= str.length()) {
+            return null;
+        }
+        var sub = str.substring(startFrom, str.length());
+        var idx = sub.find(target);
+        return (idx != null) ? (startFrom + idx) : null;
+    }
+
+    private function extractJsonValue(raw as String, fromPos as Number) as String? {
+        var firstQuote = findSub(raw, "\"", fromPos);
+        if (firstQuote == null) {
+            return null;
+        }
+        var secondQuote = findSub(raw, "\"", firstQuote + 1);
+        if (secondQuote == null) {
+            return null;
+        }
+        return raw.substring(firstQuote + 1, secondQuote);
+    }
+
+    private function parseJsonText(raw as String) as Array<VocabularyItem> {
+        var items = [] as Array<VocabularyItem>;
+        var searchPos = 0;
+        var rawLen = raw.length();
+
+        while (searchPos < rawLen) {
+            var wKeyPos = findSub(raw, "\"w\"", searchPos);
+            if (wKeyPos == null) {
+                break;
+            }
+            var wVal = extractJsonValue(raw, wKeyPos + 3);
+            if (wVal == null || wVal.length() == 0) {
+                searchPos = wKeyPos + 3;
+                continue;
+            }
+
+            var mKeyPos = findSub(raw, "\"m\"", wKeyPos);
+            var mVal = "";
+            if (mKeyPos != null) {
+                var extractedM = extractJsonValue(raw, mKeyPos + 3);
+                if (extractedM != null) {
+                    mVal = extractedM;
+                }
+            }
+
+            var pKeyPos = findSub(raw, "\"p\"", wKeyPos);
+            var pVal = "";
+            if (pKeyPos != null && (mKeyPos == null || pKeyPos < mKeyPos + 40)) {
+                var extractedP = extractJsonValue(raw, pKeyPos + 3);
+                if (extractedP != null) {
+                    pVal = extractedP;
+                }
+            }
+
+            var phKeyPos = findSub(raw, "\"ph\"", wKeyPos);
+            var phVal = "/" + wVal.toLower() + "/";
+            if (phKeyPos != null && (mKeyPos == null || phKeyPos < mKeyPos + 40)) {
+                var extractedPh = extractJsonValue(raw, phKeyPos + 4);
+                if (extractedPh != null && extractedPh.length() > 0) {
+                    phVal = extractedPh;
+                }
+            }
+
+            items.add(new VocabularyItem(wVal.toUpper(), pVal, phVal, mVal));
+            searchPos = (mKeyPos != null && mKeyPos > wKeyPos) ? mKeyPos + 3 : wKeyPos + 3;
+        }
+        return items;
+    }
+
+    private function parseQuickText(raw as String) as Array<VocabularyItem> {
+        var items = [] as Array<VocabularyItem>;
+        var len = raw.length();
+        var startIdx = 0;
+
+        for (var i = 0; i <= len; i++) {
+            var isEnd = (i == len);
+            var ch = !isEnd ? raw.substring(i, i + 1) : "";
+            if (isEnd || ch.equals(";") || ch.equals("\n")) {
+                if (i > startIdx) {
+                    var segment = raw.substring(startIdx, i);
+                    var colonPos = segment.find(":");
+                    if (colonPos == null) {
+                        colonPos = segment.find("-");
+                    }
+                    if (colonPos == null) {
+                        colonPos = segment.find("|");
+                    }
+                    if (colonPos != null && colonPos > 0 && colonPos < segment.length() - 1) {
+                        var wPart = trimStr(segment.substring(0, colonPos)).toUpper();
+                        var mPart = trimStr(segment.substring(colonPos + 1, segment.length()));
+                        if (wPart.length() > 0 && mPart.length() > 0) {
+                            var ph = "/" + wPart.toLower() + "/";
+                            items.add(new VocabularyItem(wPart, "", ph, mPart));
+                        }
+                    }
+                }
+                startIdx = i + 1;
+            }
+        }
+        return items;
+    }
+
+    private function parseDirectWords(raw as String) as Array<VocabularyItem> {
+        if (raw == null || raw.length() < 3) {
+            return [] as Array<VocabularyItem>;
+        }
+        if (raw.find("\"w\"") != null) {
+            return parseJsonText(raw);
+        }
+        return parseQuickText(raw);
+    }
+
+    private function loadDirectCustomWords() as Array<VocabularyItem>? {
+        var rawText = Application.Properties.getValue("CustomVocabJson");
+        if (rawText != null && rawText instanceof String && rawText.length() > 2) {
+            var parsed = parseDirectWords(rawText);
+            if (parsed.size() > 0) {
+                return parsed;
             }
         }
         return null;

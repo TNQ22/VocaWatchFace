@@ -12,17 +12,17 @@
     <string id="SettingIntervalPrompt">Số phút đổi từ (áp dụng khi chọn chế độ Định kỳ)</string>
 
     <string id="SettingTopicTitle">Chủ đề từ vựng</string>
-    <string id="SettingTopicPrompt">Chọn bộ từ vựng muốn học</string>
+    <string id="SettingTopicPrompt">Chọn bộ từ có sẵn (Khách sạn, IT, Giao tiếp...) hoặc Tùy chỉnh để tự nhập từ / dùng API</string>
     <string id="TopicGeneral">Giao tiếp hàng ngày</string>
     <string id="TopicIelts">IELTS / Học thuật</string>
     <string id="TopicFitness">Chạy bộ &amp; Thể thao</string>
     <string id="TopicHospitality">Chuyên ngành Khách sạn</string>
     <string id="TopicHotelIt">IT Khách sạn &amp; Công nghệ</string>
-    <string id="TopicCustom">Tùy chỉnh (Google Sheet / Web API)</string>
+    <string id="TopicCustom">Tùy chỉnh (Nhập trực tiếp / API)</string>
 
-    <string id="SettingApiUrlTitle">Web API Cập nhật từ</string>
-    <string id="SettingApiUrlPrompt">URL máy chủ cung cấp từ vựng hàng ngày</string>
+    <string id="SettingCustomJsonTitle">Nhập từ trực tiếp (Chủ đề Tùy chỉnh)</string>
+    <string id="SettingCustomJsonPrompt">Cú pháp: TỪ: Nghĩa; TỪ: Nghĩa (Ví dụ: RUN: Chạy bộ; PACE: Tốc độ chạy). Cần chọn Chủ đề là 'Tùy chỉnh' ở trên để kích hoạt.</string>
 
-    <string id="SettingCustomJsonTitle">Nhập từ vựng trực tiếp</string>
-    <string id="SettingCustomJsonPrompt">Nhập JSON từ vựng (ví dụ: [{"w":"Run","m":"Chạy"}])</string>
+    <string id="SettingApiUrlTitle">URL Web API / Google Sheet (Tùy chỉnh nâng cao)</string>
+    <string id="SettingApiUrlPrompt">Dán link Google Apps Script hoặc API server (dùng khi ô Nhập trực tiếp để trống và chọn Chủ đề Tùy chỉnh)</string>
 </strings>
