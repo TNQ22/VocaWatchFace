@@ -98,7 +98,9 @@ user32.ReleaseDC(found_hwnd, hdc)
 img = Image.frombuffer('RGBA', (w, h), buf, 'raw', 'BGRA', 0, 1).convert('RGB')
 
 # Output paths
-art_dir = r"C:\Users\TNQ\.t3\userdata\providers\antigravity\ac0a3dfd6dddb20962cecff6ee5fe65e19d3923be20e52c5ab52ff877f7e4c32\antigravity-acp\brain\ece86122-7d36-45ea-b390-ff309f16de4a"
+art_dir = os.environ.get("ARTIFACT_DIR", r"C:\Users\TNQ\.t3\userdata\providers\antigravity\ac0a3dfd6dddb20962cecff6ee5fe65e19d3923be20e52c5ab52ff877f7e4c32\antigravity-acp\brain\644f5cce-b6a0-4825-a71c-c9645e528f35")
+os.makedirs(art_dir, exist_ok=True)
+os.makedirs("out", exist_ok=True)
 
 # Calculate display rect (fr245m: client x=77, y=189, width=240, height=240)
 sx = dx + 77
@@ -112,5 +114,7 @@ watch_path = os.path.join(art_dir, "simulator_fr245_watch.png")
 
 screen.save(screen_path)
 watch.save(watch_path)
+screen.save("out/simulator_fr245_screen.png")
+watch.save("out/simulator_fr245_watch.png")
 print(f"Saved screen crop (240x240) to {screen_path}")
 print(f"Saved watch crop to {watch_path}")

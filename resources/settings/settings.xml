@@ -8,7 +8,7 @@
         <property id="ApiUrl" type="string">https://my-vocab-api.com/daily-words</property>
         <!-- Danh sách từ vựng tùy chỉnh (nhập trực tiếp dạng JSON trên điện thoại) -->
         <property id="CustomVocabJson" type="string"></property>
-        <!-- Chọn chủ đề từ vựng có sẵn: 0: Giao tiếp, 1: IELTS/TOEIC, 2: Chạy bộ & Thể thao, 3: Tự nhập -->
+        <!-- Chọn chủ đề từ vựng có sẵn: 0: Giao tiếp, 1: IELTS, 2: Thể thao, 3: Khách sạn, 4: IT Khách sạn, 5: Tùy chỉnh (Google Sheet / Web API) -->
         <property id="VocabTopic" type="number">0</property>
     </properties>
 
@@ -31,7 +31,9 @@
                 <listEntry value="0">@Strings.TopicGeneral</listEntry>
                 <listEntry value="1">@Strings.TopicIelts</listEntry>
                 <listEntry value="2">@Strings.TopicFitness</listEntry>
-                <listEntry value="3">@Strings.TopicCustom</listEntry>
+                <listEntry value="3">@Strings.TopicHospitality</listEntry>
+                <listEntry value="4">@Strings.TopicHotelIt</listEntry>
+                <listEntry value="5">@Strings.TopicCustom</listEntry>
             </settingConfig>
         </setting>
 
