@@ -40,7 +40,7 @@ Lưu ý các font hệ thống của Garmin có khoảng đệm trên ẩn (`FON
 2. **Giờ - Phút (`timeY = 20`) & Giây (`secY = 65`)**:
    - `FONT_NUMBER_HOT` căn dấu `:` tại `centerX`, số giây màu vàng (`0xFFFF00`) đặt ngang đáy số phút bên phải. Không để vạch phân cách đè lên số.
 3. **Cụm Từ vựng ở giữa màn hình**:
-   - Thanh tiến độ trên (`topBarY = 96`), từ vựng + từ loại (`wordY = 96`), phiên âm IPA (`phoneticY = 124`), nghĩa tiếng Việt (`meaningY = 144`), thanh tiến độ bước chân dưới (`botBarY = 172`).
+   - Thanh tiến độ trên (`topBarY = 96`), từ vựng + từ loại (`wordY = 95`), phiên âm IPA (`phoneticY = 123`), nghĩa tiếng Việt (`meaningY = 147`), thanh tiến độ bước chân dưới (`botBarY = 172`).
    - Hai thanh phân cách trên & dưới có chiều rộng bằng nhau (`segBarWidth = 206`), vươn sát viền màn hình tròn mà không bị cắt góc.
    - Nghĩa tiếng Việt dài vượt `218px` tự xuống tối đa 2 dòng qua `splitTextToFit`.
 4. **Hàng Bước chân | Nhịp tim (`rowY = 182`, dùng `DateFont`)**:

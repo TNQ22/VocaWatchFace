@@ -189,7 +189,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
             wordDim = dc.getTextDimensions(word.word, wordFont);
         }
 
-        var wordY = 96;
+        var wordY = 95;
         dc.setColor(COLOR_GREEN_MAIN, Graphics.COLOR_TRANSPARENT);
         dc.drawText(centerX, wordY, wordFont, word.word, Graphics.TEXT_JUSTIFY_CENTER);
 
@@ -199,14 +199,14 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var posY = wordY + wordDim[1] - posDim[1] - 3;
         dc.drawText(posX, posY, posFont, word.pos, Graphics.TEXT_JUSTIFY_LEFT);
 
-        // Dòng 2: PHIÊN ÂM IPA (Vàng kim) - font phoneticFont hỗ trợ IPA chuẩn
-        var phoneticY = 124;
+        // Dòng 2: PHIÊN ÂM IPA (Vàng kim) - căn đều giữa từ tiếng Anh và nghĩa tiếng Việt, tránh đè dấu/descender
+        var phoneticY = 123;
         var pFont = (phoneticFont != null) ? phoneticFont : Graphics.FONT_XTINY;
         dc.setColor(COLOR_YELLOW_SEC, Graphics.COLOR_TRANSPARENT);
         dc.drawText(centerX, phoneticY, pFont, word.phonetic, Graphics.TEXT_JUSTIFY_CENTER);
 
-        // Dòng 3: NGHĨA TIẾNG VIỆT (Trắng) - dùng MeaningFont hỗ trợ đầy đủ dấu tiếng Việt
-        var meaningY = 144;
+        // Dòng 3: NGHĨA TIẾNG VIỆT (Trắng) - hạ sát thanh dưới cho cân với thanh trên và không chạm phiên âm
+        var meaningY = 147;
         var mFont = (meaningFont != null) ? meaningFont : ((phoneticFont != null) ? phoneticFont : Graphics.FONT_XTINY);
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         var meaningLines = splitTextToFit(dc, word.meaning, mFont, 218);
@@ -214,7 +214,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var extraMeaningH = 0;
         if (meaningLines.size() > 1) {
             dc.drawText(centerX, meaningY + 15, mFont, meaningLines[1], Graphics.TEXT_JUSTIFY_CENTER);
-            extraMeaningH = 13;
+            extraMeaningH = 14;
         }
 
         // C. THANH DƯỚI: TRÙNG SỐ VẠCH TIẾN ĐỘ BƯỚC CHÂN
@@ -228,7 +228,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         drawSegmentedBar(dc, centerX, botBarY, segBarWidth, barHeight, totalWords, activeStepSegs, COLOR_GREEN_MAIN, false);
 
         // 6. BƯỚC CHÂN THỰC TẾ BÊN TRÁI | NHỊP TIM BÊN PHẢI (căn đều giữa botBarY=172 và botStatusY=207)
-        var rowY = 182 + extraMeaningH;
+        var rowY = 182 + (extraMeaningH > 0 ? 9 : 0);
         var stepStr = steps.toString();
         var hrStr = getHeartRate();
 
@@ -296,7 +296,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         if (showNotif) { totalBarW += iconSpacing + notifW; }
 
         var curX = centerX - (totalBarW / 2);
-        var botStatusY = 207 + (extraMeaningH > 0 ? 3 : 0);
+        var botStatusY = 207 + (extraMeaningH > 0 ? 4 : 0);
 
         // 1. Pin
         drawCompactWhiteBattery(dc, curX, botStatusY, battery);
