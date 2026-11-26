@@ -48,7 +48,7 @@ Lưu ý các font hệ thống của Garmin có khoảng đệm trên ẩn (`FON
    - Trái: `icon_footprints.png` (`18×18`, xanh `0x00FF00`) + số bước; giữa: dấu `|`; phải: `icon_heart.png` (`18×18`, đỏ `0xFF0000`) + nhịp tim.
 5. **Cụm trạng thái & thông báo ở dưới cùng (`botStatusY = 207`)**:
    - **Thứ tự cố định từ trái sang phải**:
-     `Pin` → `Kết nối điện thoại` → `Báo thức` → `Không làm phiền` → `Tai nghe` → `Thông báo`.
+     `Pin` → `Kết nối điện thoại` → `Báo thức` → `Không làm phiền` → `Tai nghe` *(mặc định tắt vì Connect IQ SDK không có API kiểm tra tai nghe trên WatchFace, giữ sẵn vị trí & icon)* → `Thông báo`.
 
 ---
 

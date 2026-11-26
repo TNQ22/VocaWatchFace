@@ -279,7 +279,8 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         var showPhone = devSettings.phoneConnected;
         var showAlarm = (alarmCount != null && alarmCount > 0);
         var showMoon = (devSettings has :doNotDisturb && devSettings.doNotDisturb);
-        var showHeadphone = true;
+        // Connect IQ SDK không có API kiểm tra tai nghe Bluetooth trên WatchFace -> mặc định tắt, giữ sẵn icon/vị trí
+        var showHeadphone = false;
         var showNotif = (notifCount > 0);
 
         var iconSpacing = 3;
