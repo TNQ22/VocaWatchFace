@@ -210,7 +210,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         drawSegmentedBar(dc, centerX, botBarY, segBarWidth, barHeight, totalWords, activeStepSegs, COLOR_GREEN_MAIN, false);
 
         // 6. BƯỚC CHÂN THỰC TẾ BÊN TRÁI | NHỊP TIM BÊN PHẢI (cân đối cách đáy thanh dưới)
-        var rowY = 185;
+        var rowY = 186;
         var stepStr = steps.toString();
         var hrStr = getHeartRate();
 
@@ -279,7 +279,7 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         if (showNotif) { totalBarW += iconSpacing + notifW; }
 
         var curX = centerX - (totalBarW / 2);
-        var botStatusY = 206;
+        var botStatusY = 210;
 
         // 1. Pin
         drawCompactWhiteBattery(dc, curX, botStatusY, battery);

@@ -40,13 +40,13 @@ Lưu ý các font hệ thống của Garmin có khoảng đệm trên ẩn (`FON
 2. **Giờ - Phút (`timeY = 20`) & Giây (`secY = 65`)**:
    - `FONT_NUMBER_HOT` căn dấu `:` tại `centerX`, số giây màu vàng (`0xFFFF00`) đặt ngang đáy số phút bên phải. Không để vạch phân cách đè lên số.
 3. **Cụm Từ vựng ở giữa màn hình**:
-   - Thanh tiến độ trên (`topBarY = 96`), từ vựng + từ loại (`wordY = 95`), phiên âm IPA (`phoneticY = 123`), nghĩa tiếng Việt (`meaningY = 147`), thanh tiến độ bước chân dưới (`botBarY = 172`).
+   - Thanh tiến độ trên (`topBarY = 86`), từ vựng + từ loại (`wordY = 86`), phiên âm IPA (`phoneticY = 114`), nghĩa tiếng Việt (`135` & `152` nếu 2 dòng, `143` nếu 1 dòng), thanh tiến độ bước chân dưới (`botBarY = 178`).
    - Hai thanh phân cách trên & dưới có chiều rộng bằng nhau (`segBarWidth = 206`), vươn sát viền màn hình tròn mà không bị cắt góc.
    - Nghĩa tiếng Việt dài vượt `218px` tự xuống tối đa 2 dòng qua `splitTextToFit`.
-4. **Hàng Bước chân | Nhịp tim (`rowY = 182`, dùng `DateFont`)**:
-   - Căn giữa đều giữa thanh phân chia dưới (`botBarY = 172`) và cụm trạng thái (`botStatusY = 207`).
+4. **Hàng Bước chân | Nhịp tim (`rowY = 186`, dùng `DateFont`)**:
+   - Căn giữa đều giữa thanh phân chia dưới (`botBarY = 178`) và cụm trạng thái (`botStatusY = 210`), cách đều 6px mỗi phía.
    - Trái: `icon_footprints.png` (`18×18`, xanh `0x00FF00`) + số bước; giữa: dấu `|`; phải: `icon_heart.png` (`18×18`, đỏ `0xFF0000`) + nhịp tim.
-5. **Cụm trạng thái & thông báo ở dưới cùng (`botStatusY = 207`)**:
+5. **Cụm trạng thái & thông báo ở dưới cùng (`botStatusY = 210`)**:
    - **Thứ tự cố định từ trái sang phải**:
      `Pin` → `Kết nối điện thoại` → `Báo thức` → `Không làm phiền` → `Tai nghe` *(mặc định tắt vì Connect IQ SDK không có API kiểm tra tai nghe trên WatchFace, giữ sẵn vị trí & icon)* → `Thông báo`.
 
