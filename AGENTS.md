@@ -40,8 +40,11 @@ Lưu ý các font hệ thống của Garmin có khoảng đệm trên ẩn (`FON
 2. **Giờ - Phút (`timeY = 20`) & Giây (`secY = 65`)**:
    - `FONT_NUMBER_HOT` căn dấu `:` tại `centerX`, số giây màu vàng (`0xFFFF00`) đặt ngang đáy số phút bên phải. Không để vạch phân cách đè lên số.
 3. **Cụm Từ vựng ở giữa màn hình**:
-   - Thanh tiến độ trên (`topBarY = 86`), từ vựng + từ loại (`wordY = 86`), phiên âm IPA (`phoneticY = 114`), nghĩa tiếng Việt (`135` & `152` nếu 2 dòng, `143` nếu 1 dòng), thanh tiến độ bước chân dưới (`botBarY = 178`).
+   - Thanh tiến độ trên (`topBarY = 86`), từ vựng + từ loại (`wordY`), phiên âm IPA (`phoneticY`), nghĩa tiếng Việt, thanh tiến độ bước chân dưới (`botBarY = 178`).
    - Hai thanh phân cách trên & dưới có chiều rộng bằng nhau (`segBarWidth = 206`), vươn sát viền màn hình tròn mà không bị cắt góc.
+   - Bố cục tọa độ Y tự động điều chỉnh linh hoạt theo số dòng của nghĩa tiếng Việt (`isSingleMeaning = meaningLines.size() <= 1`):
+     - **Khi có 1 dòng nghĩa** (`isSingleMeaning`): `wordY = 92`, `phoneticY = 120`, `meaningY = 143`. Khoảng cách phía trên từ tiếng Anh tới thanh trên (`~9-10px`) và phía dưới nghĩa tới thanh tiến độ bước chân (`~10-11px`) được cân bằng đối xứng hoàn hảo, các dòng cách đều `6-7px`, khắc phục tình trạng từ tiếng Anh bám sát trên còn bên dưới trống thênh thang.
+     - **Khi có 2 dòng nghĩa**: `wordY = 86`, `phoneticY = 114`, nghĩa tại `135` & `152`. Bố cục nén vừa vặn để 2 dòng nghĩa không bị đè vào thanh phân cách dưới.
    - Nghĩa tiếng Việt dài vượt `218px` tự xuống tối đa 2 dòng qua `splitTextToFit`.
 4. **Hàng Bước chân | Nhịp tim (`rowY = 186`, dùng `DateFont`)**:
    - Căn giữa đều giữa thanh phân chia dưới (`botBarY = 178`) và cụm trạng thái (`botStatusY = 210`), cách đều 6px mỗi phía.

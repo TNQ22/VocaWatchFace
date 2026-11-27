@@ -158,6 +158,15 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         drawSegmentedBar(dc, centerX, topBarY, segBarWidth, barHeight, totalWords, currentVocabIdx, COLOR_GREEN_MAIN, true);
 
         // B. NỘI DUNG TỪ VỰNG
+        var mFont = (meaningFont != null) ? meaningFont : ((phoneticFont != null) ? phoneticFont : Graphics.FONT_XTINY);
+        var meaningLines = splitTextToFit(dc, word.meaning, mFont, 218);
+        var isSingleMeaning = (meaningLines.size() <= 1);
+
+        // Khi chỉ có 1 dòng nghĩa: hạ wordY và phoneticY xuống để khoảng cách phía trên từ tiếng Anh
+        // và phía dưới nghĩa tiếng Việt đều nhau (~10px mỗi bên), các dòng cách đều 7px.
+        var wordY = isSingleMeaning ? 92 : 86;
+        var phoneticY = isSingleMeaning ? 120 : 114;
+
         // Dòng 1: TỪ VỰNG căn chính giữa (Xanh lá) + Từ loại tách riêng đặt bên phải ngang đáy (Xanh dương)
         var wordFont = Graphics.FONT_MEDIUM;
         var wordDim = dc.getTextDimensions(word.word, wordFont);
@@ -170,7 +179,6 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
             wordDim = dc.getTextDimensions(word.word, wordFont);
         }
 
-        var wordY = 86;
         dc.setColor(COLOR_GREEN_MAIN, Graphics.COLOR_TRANSPARENT);
         dc.drawText(centerX, wordY, wordFont, word.word, Graphics.TEXT_JUSTIFY_CENTER);
 
@@ -183,20 +191,17 @@ class EnglishWatchFaceView extends WatchUi.WatchFace {
         }
 
         // Dòng 2: PHIÊN ÂM IPA (Vàng kim)
-        var phoneticY = 114;
         var pFont = (phoneticFont != null) ? phoneticFont : Graphics.FONT_XTINY;
         dc.setColor(COLOR_YELLOW_SEC, Graphics.COLOR_TRANSPARENT);
         dc.drawText(centerX, phoneticY, pFont, word.phonetic, Graphics.TEXT_JUSTIFY_CENTER);
 
         // Dòng 3: NGHĨA TIẾNG VIỆT (Trắng) - xử lý 1 hoặc 2 dòng cân đối, không đè vạch
-        var mFont = (meaningFont != null) ? meaningFont : ((phoneticFont != null) ? phoneticFont : Graphics.FONT_XTINY);
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        var meaningLines = splitTextToFit(dc, word.meaning, mFont, 218);
-        if (meaningLines.size() > 1) {
+        if (isSingleMeaning) {
+            dc.drawText(centerX, 143, mFont, meaningLines[0], Graphics.TEXT_JUSTIFY_CENTER);
+        } else {
             dc.drawText(centerX, 135, mFont, meaningLines[0], Graphics.TEXT_JUSTIFY_CENTER);
             dc.drawText(centerX, 152, mFont, meaningLines[1], Graphics.TEXT_JUSTIFY_CENTER);
-        } else {
-            dc.drawText(centerX, 143, mFont, meaningLines[0], Graphics.TEXT_JUSTIFY_CENTER);
         }
 
         // C. THANH DƯỚI: TRÙNG SỐ VẠCH TIẾN ĐỘ BƯỚC CHÂN (y=178, hạ 5px theo yêu cầu)
